@@ -7,8 +7,7 @@ import 'screen_manager.dart';
 import 'screen_element.dart';
 
 class GameScreen {
-  ScreenManager _screenManager;
-  ScreenManager get screenManager => _screenManager;
+  ScreenManager screenManager;
   
   void update(GameLoop gameLoop)
   {

@@ -11,6 +11,7 @@ class ScreenManager {
   
   void addScreen(GameScreen screenToAdd)
   {
+    screenToAdd.screenManager = this;
     screens.add(screenToAdd);
   }
   
@@ -35,4 +36,9 @@ class ScreenManager {
     }
   }
   
+  void setScreen(GameScreen screen)
+  {
+    screens.clear();
+    screens.add(screen);
+  }
 }
