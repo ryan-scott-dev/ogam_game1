@@ -1,27 +1,46 @@
 import 'dart:html';
 import 'package:game_loop/game_loop.dart';
 
+import '../lib/texture_manager.dart';
+import '../lib/screen_manager.dart';
+import '../lib/home_screen.dart';
+
 GameLoop gameLoop;
+ScreenManager screenManager;
+CanvasRenderingContext2D renderContext;
 
 void update(GameLoop gameLoop) {
-  bool mouseDown = gameLoop.mouse.isDown(GameLoopMouse.LEFT);
+  screenManager.update(gameLoop);
   
-  if (mouseDown) {
-    print('left down.');
-  }
+  renderContext.beginPath();
   
-  bool down = gameLoop.keyboard.isDown(GameLoopKeyboard.D);
-  double timePressed = gameLoop.keyboard.timePressed(GameLoopKeyboard.D);
-  double timeReleased = gameLoop.keyboard.timeReleased(GameLoopKeyboard.D);
+  renderContext.clearRect(0, 0, renderContext.canvas.clientWidth,
+      renderContext.canvas.clientHeight);
   
-  if (gameLoop.keyboard.released(GameLoopKeyboard.D)) {
-    print('D down: $down $timePressed $timeReleased');
-    //gameLoop.enableFullscreen(true);
-  }
+  screenManager.draw(renderContext);
+  
+  renderContext.closePath();
+}
+
+void load()
+{
+   TextureManager.load("new_game.png");
+}
+
+void onLoadComplete()
+{
+  screenManager = new ScreenManager();
+  screenManager.addScreen(new HomeScreen());
 }
 
 void main() {
-  gameLoop = new GameLoop(query('#gameElement'));
+  var canvasElement = query('#gameCanvas');
+  renderContext = canvasElement.getContext('2d');  
+  
+  load();
+  onLoadComplete();
+  
+  gameLoop = new GameLoop(canvasElement);
   gameLoop.onUpdate = update;
   gameLoop.start();
 }
