@@ -10,6 +10,8 @@ ScreenManager screenManager;
 CanvasRenderingContext2D renderContext;
 
 void update(GameLoop gameLoop) {
+  document.body.style.cursor = 'default';  
+  
   screenManager.update(gameLoop);
   
   renderContext.beginPath();
@@ -25,6 +27,7 @@ void update(GameLoop gameLoop) {
 void load()
 {
    TextureManager.load("new_game.png");
+   TextureManager.load("about.png");
 }
 
 void onLoadComplete()
