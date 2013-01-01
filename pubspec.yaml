@@ -1,0 +1,8 @@
+name:  Game01
+description: My first game for one game a month. http://www.onegameamonth.com/AtTheAlma
+
+dependencies:
+  game_loop:
+    git: https://github.com/johnmccutchan/game_loop.git
+  vector_math:
+    git: https://github.com/johnmccutchan/DartVectorMath.git
