@@ -49,18 +49,33 @@ class GameplayScreen extends GameScreen
       
       node.pos = nodePos;
       
-      // Create the paths between nodes
-      forts.sort((a,b) => distance(a.pos, node.pos).compareTo(distance(b.pos, node.pos)));
-      
-      var numberOfNeighbours = inRange(rnf, 1, 2).toInt();
-      var neighbourCount = 0;
-      var neighbours = forts.filter((element) => neighbourCount++ < numberOfNeighbours);
-      
-      node.addNeighbours(neighbours as Collection<FortNode>);
-      
       forts.add(node);
       addScreenElement(node);
     }
+    
+    // Link the forts together with paths
+    for (var fort in forts)
+    {
+      // Create the paths between nodes
+      forts.sort((a,b) => distance(a.pos, fort.pos).compareTo(distance(b.pos, fort.pos)));
+      
+      var numberOfNeighbours = inRange(rnf, 2, 3).toInt();
+      var neighbourCount = 0;
+      var neighbours = forts.filter((element) => element != fort && neighbourCount++ < numberOfNeighbours);
+      
+      fort.addNeighbours(neighbours);
+    }
+    
+    var orphanForts = forts.filter((fort) => fort.neighbours.length == 0);
+    
+    // Prune the orphan nodes
+    for (var fort in orphanForts)
+    {
+      forts.removeAt(forts.indexOf(fort));
+      elements.removeAt(elements.indexOf(fort));
+    }
+    var prunedFortCount = orphanForts.length; 
+    print("Pruned $prunedFortCount forts.");
   }
   
   num inRange(Random rng, num min, num max)
