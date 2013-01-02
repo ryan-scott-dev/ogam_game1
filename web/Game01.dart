@@ -28,6 +28,7 @@ void load()
 {
    TextureManager.load("new_game.png");
    TextureManager.load("about.png");
+   TextureManager.load("node.png");
 }
 
 void onLoadComplete()
