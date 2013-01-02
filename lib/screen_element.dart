@@ -9,12 +9,26 @@ import 'game_screen.dart';
 import 'size.dart';
 
 abstract class ScreenElement {
+  js.Proxy shape;
+  bool dirty = true;
+  
   GameScreen _screen;
   GameScreen get screen => _screen;
   
-  vec2 pos;
-  Size scale;
+  ScreenElement(this._screen);
   
-  void draw(CanvasRenderingContext2D renderContext);
+  vec2 get pos => js.scoped(() {return new vec2(shape.getX(), shape.getY());});
+       set pos(value) => js.scoped(() {
+         shape.setPosition(value.x, value.y);
+         dirty = true;
+       });  
+       
+  Size get scale => js.scoped(() {return new Size(width: shape.getScale().x, height: shape.getScale().y);});
+       set scale(value) => js.scoped(() {
+         shape.setScale(value.width, value.height);
+         dirty = true;
+       });  
+  
+  void draw();
   void update(GameLoop gameLoop);
 }

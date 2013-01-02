@@ -8,5 +8,5 @@ import 'screen_manager.dart';
 import 'button.dart';
 
 class AboutScreen extends GameScreen {
-  
+  AboutScreen(ScreenManager screenManager) : super(screenManager);
 }

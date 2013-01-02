@@ -5,6 +5,8 @@ import 'texture.dart';
 
 class TextureManager {
   static Map<String, Texture> _textures = new Map<String, Texture>();
+  static List<Texture> _texturesLoading = new List<Texture>();
+  static Function onLoadComplete;
   
   static Texture get(String textureName)
   {
@@ -15,12 +17,14 @@ class TextureManager {
   {
     ImageElement img = new ImageElement(src: "images\\$textureName");
     var texture = new Texture(textureName, img);
-    _textures.putIfAbsent(textureName, () => texture);
+    
+    _textures[textureName] = texture;
+    _texturesLoading.add(texture);
     
     img.on.load.add((event) {
-      print("Loaded $textureName");
-      
-      texture.loaded = true;  
+      _texturesLoading.removeAt(_texturesLoading.indexOf(texture));
+      if(_texturesLoading.length == 0)
+        onLoadComplete();
     });
   }
 }

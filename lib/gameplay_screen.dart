@@ -16,7 +16,7 @@ class GameplayScreen extends GameScreen
   static final int NodePadding = 10;
   final List<FortNode> forts = new List<FortNode>();
   
-  GameplayScreen()
+  GameplayScreen(ScreenManager screenManager) : super(screenManager)
   {
     var worldSize = new Size(width: 640, height: 480);
     var nodeScale = 0.5;
@@ -26,7 +26,7 @@ class GameplayScreen extends GameScreen
     for (var i = 0; i < 10; i++)
     {
       
-      var node = new FortNode();
+      var node = new FortNode(this);
       node.scale = new Size(width: nodeScale, height: nodeScale);
       var nodeSize = node.size;
       

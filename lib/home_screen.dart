@@ -16,32 +16,32 @@ import 'about_screen.dart';
 
 class HomeScreen extends GameScreen 
 {
-  HomeScreen()
+  HomeScreen(ScreenManager screenManager) : super(screenManager)
   {
-    var background = new Background("#000000");
+    var background = new Background("#000000", this);
     addScreenElement(background);
     
     var new_game_button = new Button(new vec2(100, 100), "new_game.png", 
-        (button, gameLoop) => showGame()); 
+        (button, gameLoop) => showGame(), this); 
     
     addScreenElement(new_game_button);
     
     var about_button = new Button(new vec2(100, 220), "about.png", 
-        (button, gameLoop) => showAbout()); 
+        (button, gameLoop) => showAbout(), this); 
     
     addScreenElement(about_button);
   }
   
   void showGame()
   {
-    screenManager.setScreen(new GameplayScreen());
+    screenManager.setScreen(new GameplayScreen(screenManager));
     
     print("Now showing game");
   }
   
   void showAbout()
   {
-    screenManager.setScreen(new AboutScreen());
+    screenManager.setScreen(new AboutScreen(screenManager));
     
     print("Now showing about");
   }

@@ -2,4 +2,5 @@
 packages
 .project
 .children
-*.js
+*.js.deps
+*.js.map

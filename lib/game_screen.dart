@@ -2,26 +2,50 @@ library game_screen;
 
 import 'dart:html';
 import 'package:game_loop/game_loop.dart';
+import 'package:js/js.dart' as js;
 
 import 'screen_manager.dart';
 import 'screen_element.dart';
 
 class GameScreen {
+  num get width => screenManager.screenWidth;
+  num get height => screenManager.screenHeight;
+  
   ScreenManager screenManager;
+  js.Proxy _layer;
+  js.Proxy get layer => _layer;
+  
+  GameScreen(ScreenManager screenManager)
+  {
+    this.screenManager = screenManager;
+    
+    js.scoped(() {
+      var kinetic = js.context.Kinetic;
+      _layer = js.retain(new js.Proxy(kinetic.Layer));
+    });
+    
+    screenManager.addScreen(this);
+  }
   
   void update(GameLoop gameLoop)
   {
     updateElements(gameLoop);
   }
   
-  void draw(CanvasRenderingContext2D renderContext)
+  void draw()
   {
-    drawElements(renderContext);
-  }
-  
-  void exit()
-  {
-    screenManager.removeScreen(this);
+    if(elements.some((element) => element.dirty))
+    {
+      for(var element in elements)
+        element.dirty = false;
+      
+      js.scoped(() {
+        _layer.clear();
+        _layer.draw();
+      });
+    }
+    
+    drawElements();
   }
   
   List<ScreenElement> _elements = new List<ScreenElement>(); 
@@ -45,11 +69,11 @@ class GameScreen {
     }
   }
   
-  void drawElements(CanvasRenderingContext2D renderContext)
+  void drawElements()
   {
     for(var element in elements)
     {
-      element.draw(renderContext);
+      element.draw();
     }
   }
 }
