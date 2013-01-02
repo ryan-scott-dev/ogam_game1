@@ -11,7 +11,7 @@ import 'texture_manager.dart';
 import 'image_screen_element.dart';
 import 'game_screen.dart';
 
-typedef void ButtonClickCallback(Button button, GameLoop gameLoop);
+typedef void ButtonClickCallback(Button button);
 
 class Button extends ImageScreenElement {
   ButtonClickCallback _callback;
@@ -31,26 +31,19 @@ class Button extends ImageScreenElement {
       shape.on('mouseout', new js.Callback.many((event) {
         document.body.style.cursor = 'default';
       }));
+      
+      shape.on('click', new js.Callback.many((event) {
+        click();
+      }));
     });
   }
   
   void update(GameLoop gameLoop)
   {
-    if(isWithin(gameLoop.mouse.x, gameLoop.mouse.y))
-    {
-      if(gameLoop.mouse.pressed(GameLoopMouse.LEFT))
-        click(gameLoop);
-    }
   }
   
-  bool isWithin(int x, int y)
+  void click()
   {
-    return x >= pos.x && x <= pos.x + texture.image.width &&
-        y >= pos.y && y <= pos.y + texture.image.height;
-  }
-  
-  void click(GameLoop gameLoop)
-  {
-    _callback(this, gameLoop);
+    _callback(this);
   }
 }

@@ -22,12 +22,12 @@ class HomeScreen extends GameScreen
     addScreenElement(background);
     
     var new_game_button = new Button(new vec2(100, 100), "new_game.png", 
-        (button, gameLoop) => showGame(), this); 
+        (button) => showGame(), this); 
     
     addScreenElement(new_game_button);
     
     var about_button = new Button(new vec2(100, 220), "about.png", 
-        (button, gameLoop) => showAbout(), this); 
+        (button) => showAbout(), this); 
     
     addScreenElement(about_button);
   }
