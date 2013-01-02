@@ -32,6 +32,10 @@ abstract class ScreenElement {
   void draw();
   void update(GameLoop gameLoop);
   
+  void cleanup()
+  {
+  }
+  
   void moveToTop()
   {
     js.scoped(() {

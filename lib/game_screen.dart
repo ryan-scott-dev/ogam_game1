@@ -23,8 +23,6 @@ class GameScreen {
       var kinetic = js.context.Kinetic;
       _layer = js.retain(new js.Proxy(kinetic.Layer));
     });
-    
-    screenManager.addScreen(this);
   }
   
   void update(GameLoop gameLoop)
@@ -46,6 +44,16 @@ class GameScreen {
     }
     
     drawElements();
+  }
+  
+  void cleanup()
+  {
+    for(var element in elements)
+    {
+      element.cleanup();
+    }   
+    
+    elements.clear();
   }
   
   List<ScreenElement> _elements = new List<ScreenElement>(); 

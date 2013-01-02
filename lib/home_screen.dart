@@ -34,6 +34,7 @@ class HomeScreen extends GameScreen
   
   void showGame()
   {
+    document.body.style.cursor = 'default';
     screenManager.setScreen(new GameplayScreen(screenManager));
     
     print("Now showing game");
@@ -41,6 +42,7 @@ class HomeScreen extends GameScreen
   
   void showAbout()
   {
+    document.body.style.cursor = 'default';
     screenManager.setScreen(new AboutScreen(screenManager));
     
     print("Now showing about");

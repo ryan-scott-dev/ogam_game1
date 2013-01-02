@@ -15,26 +15,31 @@ typedef void ButtonClickCallback(Button button);
 
 class Button extends ImageScreenElement {
   ButtonClickCallback _callback;
+  js.Callback _mouseOverCallback;
+  js.Callback _mouseOutCallback;
+  js.Callback _clickCallback;
   
   Button(vec2 pos, String texturePath, ButtonClickCallback callback, GameScreen gameScreen) 
-  : super(TextureManager.get(texturePath), gameScreen)
+    : super(TextureManager.get(texturePath), gameScreen)
   {
     this.pos = pos;
     
     _callback = callback;
     
     js.scoped(() {
-      shape.on('mouseover', new js.Callback.many((event) {
+      _mouseOverCallback = new js.Callback.many((event) {
         document.body.style.cursor = 'pointer';
-      }));
-      
-      shape.on('mouseout', new js.Callback.many((event) {
+      });
+      _mouseOutCallback = new js.Callback.many((event) {
         document.body.style.cursor = 'default';
-      }));
-      
-      shape.on('click', new js.Callback.many((event) {
+      });
+      _clickCallback = new js.Callback.many((event) {
         click();
-      }));
+      });
+      
+      shape.on('mouseover', _mouseOverCallback);
+      shape.on('mouseout', _mouseOutCallback);
+      shape.on('click', _clickCallback);
     });
   }
   
@@ -44,6 +49,25 @@ class Button extends ImageScreenElement {
   
   void click()
   {
+    print("Button clicked");
+    
     _callback(this);
+    
+    print("Button finished clicking");
+  }
+  
+  void cleanup()
+  {
+    js.scoped(() {
+      shape.off('mouseover');
+      shape.off('mouseout');
+      shape.off('click');
+      
+      _mouseOverCallback.dispose();
+      _mouseOutCallback.dispose();
+      _clickCallback.dispose();
+    });
+    
+    super.cleanup();
   }
 }

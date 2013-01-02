@@ -8,7 +8,7 @@ import 'game_screen.dart';
 import 'size.dart';
 
 class ScreenManager {
-  List<GameScreen> _screens = new List<GameScreen>(); 
+  final List<GameScreen> _screens = new List<GameScreen>(); 
   List<GameScreen> get screens => _screens;
   
   num get screenWidth => canvasElement.clientWidth;
@@ -16,6 +16,7 @@ class ScreenManager {
   
   var canvasElement;
   js.Proxy _stage;
+  js.Proxy get stage => _stage;
   
   ScreenManager(String canvasId, Size canvasSize)
   {
@@ -30,12 +31,11 @@ class ScreenManager {
   
   void addScreen(GameScreen screenToAdd)
   {
+    screens.add(screenToAdd);
+    
     js.scoped(() {
       _stage.add(screenToAdd.layer);
-    });
-    
-    screenToAdd.screenManager = this;
-    screens.add(screenToAdd);
+    }); 
   }
   
   void removeScreen(GameScreen screenToRemove)
@@ -44,7 +44,7 @@ class ScreenManager {
   }
   
   void update(GameLoop gameLoop)
-  {
+  { 
     for (var screen in screens)
     {
       screen.update(gameLoop);
@@ -59,13 +59,29 @@ class ScreenManager {
     }
   }
   
+  void cleanup()
+  {
+    for(var screen in screens)
+    {
+      screen.cleanup();
+    }
+    
+    screens.clear();
+  }
+  
   void setScreen(GameScreen screen)
   {
     js.scoped(() {
       _stage.clear();
     });
     
+    for(var oldScreen in screens)
+    {
+      oldScreen.cleanup();
+    }
+    
     screens.clear();
     addScreen(screen);
   }
+  
 }

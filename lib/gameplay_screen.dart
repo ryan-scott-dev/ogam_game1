@@ -10,14 +10,18 @@ import 'size.dart';
 import 'game_screen.dart';
 import 'screen_manager.dart';
 import 'fort_node.dart';
+import 'player.dart';
 
 class GameplayScreen extends GameScreen
 {
   static final int NodePadding = 10;
   final List<FortNode> forts = new List<FortNode>();
   
-  GameplayScreen(ScreenManager screenManager) : super(screenManager)
+  GameplayScreen(ScreenManager screenManager) 
+    : super(screenManager)
   {
+    Player.setup();
+    
     var worldSize = new Size(width: 640, height: 480);
     var nodeScale = 0.5;
     

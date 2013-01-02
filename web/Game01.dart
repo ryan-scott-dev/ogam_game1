@@ -9,7 +9,7 @@ import '../lib/home_screen.dart';
 void main() {
 
   var game = new Game();
-  game.resources = ['new_game.png', 'about.png', 'node.png'];
+  game.resources = ['new_game.png', 'about.png', 'node_neutral.png', 'node_player.png', 'node_enemy.png'];
   game.start();
   
   TextureManager.onLoadComplete = () {
