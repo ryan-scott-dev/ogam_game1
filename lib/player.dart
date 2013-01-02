@@ -1,5 +1,0 @@
-library player;
-
-class Player {
-  
-}

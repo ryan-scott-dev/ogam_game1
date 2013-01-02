@@ -1,5 +1,0 @@
-library agent;
-
-class Agent {
-  
-}
