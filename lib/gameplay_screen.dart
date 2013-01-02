@@ -14,6 +14,7 @@ import 'fort_node.dart';
 class GameplayScreen extends GameScreen
 {
   static final int NodePadding = 10;
+  final List<FortNode> forts = new List<FortNode>();
   
   GameplayScreen()
   {
@@ -32,6 +33,8 @@ class GameplayScreen extends GameScreen
       var isPosValid = false;
       var nodePos = new vec2(0, 0);
       
+      // Make sure that the node isn't overlapping any other nodes
+      
       while(!isPosValid)
       {
         var xPos = inRange(rnf, nodeSize.width / 2, worldSize.width - nodeSize.width);
@@ -39,13 +42,23 @@ class GameplayScreen extends GameScreen
       
         nodePos = new vec2(xPos, yPos);
         
-        isPosValid = elements.every((element) => 
+        isPosValid = forts.every((element) => 
                       distance(nodePos, element.pos) > nodeSize.width + NodePadding);
         
       }
       
       node.pos = nodePos;
       
+      // Create the paths between nodes
+      forts.sort((a,b) => distance(a.pos, node.pos).compareTo(distance(b.pos, node.pos)));
+      
+      var numberOfNeighbours = inRange(rnf, 1, 2).toInt();
+      var neighbourCount = 0;
+      var neighbours = forts.filter((element) => neighbourCount++ < numberOfNeighbours);
+      
+      node.addNeighbours(neighbours as Collection<FortNode>);
+      
+      forts.add(node);
       addScreenElement(node);
     }
   }

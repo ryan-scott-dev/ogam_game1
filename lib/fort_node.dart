@@ -16,6 +16,8 @@ class FortNode extends ScreenElement
   Size get size => new Size(width: _texture.image.width * scale.width, 
                             height: _texture.image.height * scale.height);
   
+  final List<FortNode> neighbours = new List<FortNode>();
+  
   FortNode()
   {
     _texture = TextureManager.get('node.png');  
@@ -29,5 +31,20 @@ class FortNode extends ScreenElement
   void update(GameLoop gameLoop)
   {
     
+  }
+  
+  void addNeighbour(FortNode newNeighbour)
+  {
+    if(!neighbours.contains(newNeighbour))
+      neighbours.add(newNeighbour);
+  }
+  
+  void addNeighbours(Collection<FortNode> newNeighbours)
+  {
+    for(var neighbour in newNeighbours)
+    {
+      addNeighbour(neighbour);
+      neighbour.addNeighbour(this);
+    }
   }
 }
