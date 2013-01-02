@@ -76,10 +76,28 @@ class GameplayScreen extends GameScreen
     for (var fort in orphanForts)
     {
       forts.removeAt(forts.indexOf(fort));
-      elements.removeAt(elements.indexOf(fort));
+      removeElement(fort);
     }
+    
     var prunedFortCount = orphanForts.length; 
     print("Pruned $prunedFortCount forts.");
+    
+    // Assign player fort
+    var player = Player.get(Player.PLAYER);
+    var playerFortId = inRange(rnf, 0, forts.length - 1);
+    
+    forts[playerFortId.toInt()].changePlayer(player);
+    
+    // Assign enemy fort
+    var enemy = Player.get(Player.ENEMY);
+    var enemyFortId = inRange(rnf, 0, forts.length - 1);
+    
+    while (enemyFortId == playerFortId)
+    {
+      enemyFortId = inRange(rnf, 0, forts.length - 1);
+    }
+    
+    forts[enemyFortId.toInt()].changePlayer(enemy);
   }
   
   num inRange(Random rng, num min, num max)

@@ -15,6 +15,8 @@ class GameScreen {
   js.Proxy _layer;
   js.Proxy get layer => _layer;
   
+  bool dirty = false;
+  
   GameScreen(ScreenManager screenManager)
   {
     this.screenManager = screenManager;
@@ -32,11 +34,15 @@ class GameScreen {
   
   void draw()
   {
-    if(elements.some((element) => element.dirty))
+    if(elements.some((element) => element.dirty) || this.dirty)
     {
       for(var element in elements)
+      {
         element.dirty = false;
+      }
       
+      this.dirty = false;
+          
       js.scoped(() {
         _layer.clear();
         _layer.draw();
@@ -67,6 +73,12 @@ class GameScreen {
   void removeElement(ScreenElement elementToRemove)
   {
     elements.removeAt(elements.indexOf(elementToRemove));
+    
+    this.dirty = true;
+    elementToRemove.cleanup();
+    js.scoped(() {
+      elementToRemove.shape.remove();
+    });
   }
   
   void updateElements(GameLoop gameLoop)
