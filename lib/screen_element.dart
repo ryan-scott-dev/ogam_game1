@@ -31,4 +31,28 @@ abstract class ScreenElement {
   
   void draw();
   void update(GameLoop gameLoop);
+  
+  void moveToTop()
+  {
+    js.scoped(() {
+      shape.moveToTop();
+      dirty = true;
+    });  
+  }
+  
+  void moveToBottom()
+  {
+    js.scoped(() {
+      shape.moveToBottom();
+      dirty = true;
+    }); 
+  }
+  
+  void setLayer(num layer)
+  {
+    js.scoped(() {
+      shape.setZIndex(layer);
+      dirty = true;
+    }); 
+  }
 }

@@ -23,13 +23,12 @@ class FortNode extends ImageScreenElement
   
   void update(GameLoop gameLoop)
   {
-    
   }
   
   void addNeighbour(FortNode newNeighbour)
   {
     if(neighbours.every((path) => !path.hasNode(newNeighbour)))
-      neighbours.add(new FortPath(this, newNeighbour));
+      neighbours.add(new FortPath(this, newNeighbour, screen));
   }
   
   void addNeighbours(Collection<FortNode> newNeighbours)
