@@ -1,0 +1,5 @@
+library node;
+
+class Node {
+  
+}
