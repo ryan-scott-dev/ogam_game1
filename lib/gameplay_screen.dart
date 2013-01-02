@@ -13,22 +13,45 @@ import 'fort_node.dart';
 
 class GameplayScreen extends GameScreen
 {
+  static final int NodePadding = 10;
+  
   GameplayScreen()
   {
     var worldSize = new Size(width: 640, height: 480);
+    var nodeScale = 0.5;
     
     var rnf = new Random();
     
     for (var i = 0; i < 10; i++)
     {
-      var xPos = rnf.nextInt(worldSize.width);
-      var yPos = rnf.nextInt(worldSize.height);
       
       var node = new FortNode();
-      node.pos = new vec2(xPos, yPos);
-      node.scale = new Size(width: 0.5, height: 0.5);
+      node.scale = new Size(width: nodeScale, height: nodeScale);
+      var nodeSize = node.size;
+      
+      var isPosValid = false;
+      var nodePos = new vec2(0, 0);
+      
+      while(!isPosValid)
+      {
+        var xPos = inRange(rnf, nodeSize.width / 2, worldSize.width - nodeSize.width);
+        var yPos = inRange(rnf, nodeSize.height / 2, worldSize.height - nodeSize.height);
+      
+        nodePos = new vec2(xPos, yPos);
+        
+        isPosValid = elements.every((element) => 
+                      distance(nodePos, element.pos) > nodeSize.width + NodePadding);
+        
+      }
+      
+      node.pos = nodePos;
       
       addScreenElement(node);
     }
+  }
+  
+  num inRange(Random rng, num min, num max)
+  {
+    return (max - min + 1) * rng.nextDouble() + min;
   }
 }
