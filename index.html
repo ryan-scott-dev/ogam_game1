@@ -3,10 +3,14 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, user-scalable=no">
+        
     <title>One Game A Month: Game 01</title>
+    
     <link rel="stylesheet" href="Game01.css"></link>
     <script src="kinetic-v4.2.0.min.js"></script>
-    
+
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-37375928-1']);
@@ -21,8 +25,13 @@
     </script>
   </head>
   <body>
-    <h1>Game 01</h1>
-    <div id="testCanvas"></div>
+    <header id="header">
+      <h1>Game 01 - Node Wars</h1>
+    </header>
+    
+    <a href="https://github.com/Archytaus/ogam_game1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+    
+    <div id="canvas-container"></div>
     
     <script src="Game01.dart.js"></script>
     <script src="https://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
