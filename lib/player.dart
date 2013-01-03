@@ -10,6 +10,8 @@ class Player {
   
   num playerId;
   
+  bool get isNeutral => playerId == Player.NEUTRAL;
+  
   Player(this.playerId) {
     players[this.playerId] = this;
   }

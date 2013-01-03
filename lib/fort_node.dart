@@ -17,6 +17,9 @@ import 'agent.dart';
 
 class FortNode extends Button 
 {
+  static const MAX_UNITS = 5;
+  static const UNIT_WAIT = 3;
+  
   final List<FortPath> neighbours = new List<FortPath>();
   final List<Agent> units = new List<Agent>();
   
@@ -26,8 +29,10 @@ class FortNode extends Button
   
   int get unitCount => units.length;
   
-  Player _player;
   js.Proxy _textShape;
+  
+  Player _player;
+  num unitTimer = 0;
   
   FortNode(GameScreen gameScreen) 
     : super(new vec2(0, 0), 'node_neutral.png', null, gameScreen)
@@ -58,11 +63,33 @@ class FortNode extends Button
     js.scoped(() {
       _textShape.setText(unitCount.toString());
       _textShape.setPosition(center.x - _textShape.getWidth() / 2.0, center.y - _textShape.getHeight() / 2.0);
+      
+      if(_player.isNeutral)
+      {
+        _textShape.hide();
+      }
+      else
+      {
+        _textShape.show();
+      }
     });
   }
   
   void update(GameLoop gameLoop)
   {
+    if(unitCount < MAX_UNITS)
+    {
+      if(unitTimer < UNIT_WAIT)
+      {
+        unitTimer += gameLoop.dt;
+      }
+      else
+      {
+        unitTimer = 0;
+        units.add(new Agent());
+        this.dirty = true;
+      }
+    }
   }
   
   void onClick(Button button)
