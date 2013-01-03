@@ -4,6 +4,7 @@ import 'dart:html';
 import 'package:game_loop/game_loop.dart';
 import 'package:js/js.dart' as js;
 
+import '../lib/texture.dart';
 import '../lib/texture_manager.dart';
 import '../lib/screen_manager.dart';
 
@@ -32,7 +33,7 @@ class Game {
     }
   }
   
-  void fileLoaded(String file)
+  void fileLoaded(Texture texture)
   {
     loadedResources++;
     loadingScreen.updateProgress(loadedResources, resources.length);
