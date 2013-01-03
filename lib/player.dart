@@ -25,6 +25,7 @@ class Player extends ScreenElement {
   num playerId;
   
   bool get isNeutral => playerId == Player.NEUTRAL;
+  bool get isCurrent => playerId == Player.PLAYER;
   
   FortNode target;
   js.Proxy _targetImage;
@@ -69,6 +70,11 @@ class Player extends ScreenElement {
   {
     target = node;
     this.dirty = true;
+  }
+  
+  void resetTarget()
+  {
+    setTarget(null);
   }
   
   void update(GameLoop gameLoop)

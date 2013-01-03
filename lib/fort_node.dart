@@ -23,11 +23,8 @@ class FortNode extends Button
   final List<FortPath> neighbours = new List<FortPath>();
   final List<Agent> units = new List<Agent>();
   
-  Size get size => new Size(width: texture.image.width * scale.width, 
-                            height: texture.image.height * scale.height);
-  vec2 get center => new vec2(pos.x + size.width / 2.0, pos.y + size.height / 2.0);
-  
   int get unitCount => units.length;
+  bool get isEnemyNode => !this._player.isCurrent;
   
   js.Proxy _textShape;
   
@@ -75,9 +72,53 @@ class FortNode extends Button
     });
   }
   
+  void attack()
+  {
+    changePlayer(Player.CurrentPlayer);
+    Player.CurrentPlayer.resetTarget();
+  }
+  
   void update(GameLoop gameLoop)
   {
-    if(unitCount < MAX_UNITS)
+    generateNewUnits(gameLoop);
+    
+    moveUnitsToNearbyTargets(gameLoop);
+  }
+  
+  void moveUnitsToNearbyTargets(GameLoop gameLoop)
+  {
+    if(!_player.isCurrent)
+      return;
+    
+    if(_player.target != null && isNeighbour(_player.target))
+    {
+      var path = getNeighbour(_player.target);
+      
+      var availableUnits = units.filter((unit) => !unit.isMoving).iterator();
+      
+      if(availableUnits.hasNext)
+      {
+        var availableUnit = availableUnits.next();
+        
+        if (availableUnit != null) 
+          availableUnit.marchTowards(path);
+      }
+    }
+  }
+  
+  bool isNeighbour(FortNode node)
+  {
+    return neighbours.some((path) => path.nodeA == node || path.nodeB == node);
+  }
+  
+  FortPath getNeighbour(FortNode node)
+  {
+    return neighbours.filter((path) => path.nodeA == node || path.nodeB == node).iterator().next();
+  }
+  
+  void generateNewUnits(GameLoop gameLoop)
+  {
+    if(unitCount < MAX_UNITS && !this._player.isNeutral)
     {
       if(unitTimer < UNIT_WAIT)
       {
@@ -86,10 +127,24 @@ class FortNode extends Button
       else
       {
         unitTimer = 0;
-        units.add(new Agent());
+        
+        var newUnit = new Agent(this, screen);
+        addUnit(newUnit);
+        screen.addScreenElement(newUnit);
+        
         this.dirty = true;
       }
     }
+  }
+  
+  void addUnit(Agent agent)
+  {
+    units.add(agent);
+  }
+  
+  void removeUnit(Agent agent)
+  {
+    units.removeAt(units.indexOf(agent));
   }
   
   void onClick(Button button)

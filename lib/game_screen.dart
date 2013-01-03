@@ -36,8 +36,6 @@ class GameScreen {
   {
     if(elements.some((element) => element.dirty) || this.dirty)
     {
-      print('redrawing game screen');
-      
       for(var element in elements)
       {
         element.dirty = false;
