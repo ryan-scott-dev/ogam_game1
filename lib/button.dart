@@ -40,6 +40,7 @@ class Button extends ImageScreenElement {
       shape.on('mouseover', _mouseOverCallback);
       shape.on('mouseout', _mouseOutCallback);
       shape.on('click', _clickCallback);
+      shape.on('tap', _clickCallback);
     });
   }
   
