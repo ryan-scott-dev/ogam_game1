@@ -15,7 +15,7 @@ class GameScreen {
   js.Proxy _layer;
   js.Proxy get layer => _layer;
   
-  bool dirty = false;
+  bool dirty = true;
   
   GameScreen(ScreenManager screenManager)
   {
@@ -36,6 +36,8 @@ class GameScreen {
   {
     if(elements.some((element) => element.dirty) || this.dirty)
     {
+      print('redrawing game screen');
+      
       for(var element in elements)
       {
         element.dirty = false;
@@ -43,13 +45,13 @@ class GameScreen {
       
       this.dirty = false;
           
+      drawElements();
+      
       js.scoped(() {
         _layer.clear();
         _layer.draw();
       });
     }
-    
-    drawElements();
   }
   
   void cleanup()

@@ -47,13 +47,14 @@ class Button extends ImageScreenElement {
   {
   }
   
+  void setCallback(ButtonClickCallback newCallback)
+  {
+    _callback = newCallback;
+  }
+  
   void click()
   {
-    print("Button clicked");
-    
     _callback(this);
-    
-    print("Button finished clicking");
   }
   
   void cleanup()
