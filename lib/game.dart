@@ -8,12 +8,15 @@ import '../lib/texture_manager.dart';
 import '../lib/screen_manager.dart';
 
 import '../lib/size.dart';
+import '../lib/loading_screen.dart';
 
 class Game {
   GameLoop gameLoop;
   ScreenManager screenManager;
   CanvasRenderingContext2D renderContext;
   List<String> resources;
+  int loadedResources = 0;
+  LoadingScreen loadingScreen;
   
   void update(GameLoop gameLoop) {
     screenManager.update(gameLoop);
@@ -25,19 +28,22 @@ class Game {
   {
     for(var file in resources)
     {
-      TextureManager.load(file);  
+      TextureManager.load(file, callback: fileLoaded);  
     }
   }
-
-  void onLoadComplete()
+  
+  void fileLoaded(String file)
   {
+    loadedResources++;
+    loadingScreen.updateProgress(loadedResources, resources.length);
   }
-
+  
   void start() {
     screenManager = new ScreenManager('canvas-container', new Size(width: 640, height: 480));
+    loadingScreen = new LoadingScreen(screenManager);
+    screenManager.addScreen(loadingScreen);
     
     load();
-    onLoadComplete();
     
     gameLoop = new GameLoop(screenManager.canvasElement);
     gameLoop.onUpdate = update;

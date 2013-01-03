@@ -13,7 +13,7 @@ class TextureManager {
     return _textures[textureName];
   }
   
-  static void load(String textureName)
+  static void load(String textureName, {void callback(String textureName): null})
   {
     ImageElement img = new ImageElement(src: "images\\$textureName");
     var texture = new Texture(textureName, img);
@@ -22,9 +22,14 @@ class TextureManager {
     _texturesLoading.add(texture);
     
     img.on.load.add((event) {
+      if(callback != null)
+        callback(textureName);
+      
       _texturesLoading.removeAt(_texturesLoading.indexOf(texture));
       if(_texturesLoading.length == 0)
+      {    
         onLoadComplete();
+      }
     });
   }
 }

@@ -30,7 +30,6 @@ class Texture {
   void runLoadCallbacks()
   {
     loaded = true;
-    print("Loaded texture: $name");
     
     for(var callback in onLoadCallbacks)
     {
