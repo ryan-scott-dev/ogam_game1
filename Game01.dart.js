@@ -8721,6 +8721,7 @@ $$.anon5 = {"":"Closure;this_0",
   t2.get$shape().on$2("mouseover", t2.get$_mouseOverCallback());
   t2.get$shape().on$2("mouseout", t2.get$_mouseOutCallback());
   t2.get$shape().on$2("click", t2.get$_clickCallback());
+  t2.get$shape().on$2("tap", t2.get$_clickCallback());
 }
 };
 
