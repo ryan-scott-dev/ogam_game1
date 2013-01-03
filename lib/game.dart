@@ -34,7 +34,7 @@ class Game {
   }
 
   void start() {
-    screenManager = new ScreenManager('testCanvas', new Size(width: 640, height: 480));
+    screenManager = new ScreenManager('canvas-container', new Size(width: 640, height: 480));
     
     load();
     onLoadComplete();

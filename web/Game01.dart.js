@@ -7423,7 +7423,7 @@ $$.Game = {"":"Object;gameLoop,screenManager>,renderContext,resources",
   return new $.BoundClosure0(this, 'load$0');
 },
  start$0: function() {
-  this.screenManager = $.ScreenManager$("testCanvas", $.Size$(480, 640));
+  this.screenManager = $.ScreenManager$("canvas-container", $.Size$(480, 640));
   for (var t1 = this.resources, t1 = $.getInterceptor$JSArray(t1).iterator$0(t1); t1.get$hasNext() === true;)
     $.TextureManager_load(t1.next$0());
   this.gameLoop = $.GameLoop$(this.screenManager.get$canvasElement());
@@ -8771,6 +8771,7 @@ $$.Button_cleanup_anon = {"":"Closure;this_0",
   t1.get$shape().off$1("mouseover");
   t1.get$shape().off$1("mouseout");
   t1.get$shape().off$1("click");
+  t1.get$shape().off$1("tap");
   t1.get$_mouseOverCallback().dispose$0();
   t1.get$_mouseOutCallback().dispose$0();
   t1.get$_clickCallback().dispose$0();

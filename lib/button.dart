@@ -64,6 +64,7 @@ class Button extends ImageScreenElement {
       shape.off('mouseover');
       shape.off('mouseout');
       shape.off('click');
+      shape.off('tap');
       
       _mouseOverCallback.dispose();
       _mouseOutCallback.dispose();
