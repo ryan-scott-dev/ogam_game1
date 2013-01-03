@@ -14,7 +14,10 @@
    id="svg3654"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="New document 5">
+   sodipodi:docname="agent.svg"
+   inkscape:export-filename="/Users/ryanscott/Projects/dart/Game01/assets/agent.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs3656">
     <filter
@@ -207,14 +210,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="129.45269"
-     inkscape:cy="4.716775"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="25.581688"
+     inkscape:cy="16.84396"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1440"
-     inkscape:window-height="769"
+     inkscape:window-height="770"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
@@ -235,13 +238,64 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1020.3622)">
-    <rect
-       style="fill:#b3b3b3;filter:url(#filter4176)"
-       id="rect3944"
-       width="23.892475"
-       height="21.268446"
-       x="3.4526699"
-       y="7.0026703"
-       transform="matrix(1,0,0,1.1263736,0,1016.7895)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#abc4d9;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path4862"
+       sodipodi:sides="3"
+       sodipodi:cx="15"
+       sodipodi:cy="20.125"
+       sodipodi:r1="14.627136"
+       sodipodi:r2="7.3135681"
+       sodipodi:arg1="-1.5707963"
+       sodipodi:arg2="-0.52359878"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 15,5.4978638 12.667471,21.9407042 -25.3349428,0 z"
+       transform="matrix(1.1602287,0,0,1.3523164,-1.4688391,1014.3285)"
+       inkscape:transform-center-y="-4.9450815"
+       inkscape:export-filename="/Users/ryanscott/Projects/dart/Game01/assets/path5396.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:type="star"
+       style="fill:#abc4d9;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path5372"
+       sodipodi:sides="3"
+       sodipodi:cx="6.5"
+       sodipodi:cy="10.375001"
+       sodipodi:r1="4.6519485"
+       sodipodi:r2="2.3259742"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.6179939"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 6.5000001,15.026949 -4.0287057,-6.9779222 8.0574106,-2e-7 z"
+       transform="translate(-1.2212944,1027.0853)"
+       inkscape:transform-center-y="1.1629871"
+       inkscape:export-filename="/Users/ryanscott/Projects/dart/Game01/assets/path5396.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:transform-center-y="1.1630087"
+       transform="matrix(0.99995047,0,0,1.0000017,20.278822,1027.0853)"
+       d="m 6.5000001,15.026949 -4.0287057,-6.9779222 8.0574106,-2e-7 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="2.6179939"
+       sodipodi:arg1="1.5707963"
+       sodipodi:r2="2.3259742"
+       sodipodi:r1="4.6519485"
+       sodipodi:cy="10.375001"
+       sodipodi:cx="6.5"
+       sodipodi:sides="3"
+       id="path5396"
+       style="fill:#abc4d9;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       sodipodi:type="star"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>

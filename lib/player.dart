@@ -1,8 +1,22 @@
 library player;
 
-class Player {
+import 'dart:html';
+import 'package:game_loop/game_loop.dart';
+import 'package:vector_math/vector_math_browser.dart';
+import 'package:js/js.dart' as js;
+
+import 'screen_element.dart';
+import 'fort_node.dart';
+import 'game_screen.dart';
+import 'texture_manager.dart';
+
+class Player extends ScreenElement {
   
   static Map<num, Player> players = new Map<int, Player>();
+  
+  static Player CurrentPlayer;
+  static Player NeutralPlayer;
+  static Player EnemyPlayer;
   
   static const num NEUTRAL = 0;
   static const num PLAYER = 1;
@@ -12,8 +26,30 @@ class Player {
   
   bool get isNeutral => playerId == Player.NEUTRAL;
   
-  Player(this.playerId) {
+  FortNode target;
+  js.Proxy _targetImage;
+  
+  Player(this.playerId, GameScreen gameScreen) 
+    : super(gameScreen)
+  {
     players[this.playerId] = this;
+    
+    var texture = TextureManager.get('order.png');
+    
+    js.scoped(() {
+      var kinetic = js.context.Kinetic;
+      _targetImage = js.retain(new js.Proxy(kinetic.Image, js.map({
+          'image': texture.image,
+          'scale': 0.5
+          })
+        ));
+      
+      screen.layer.add(_targetImage);
+      
+      _targetImage.hide();
+    });
+    
+    gameScreen.addScreenElement(this);
   }
   
   String getPlayerImage()
@@ -29,11 +65,38 @@ class Player {
     }
   }
   
-  static void setup()
+  void setTarget(FortNode node)
   {
-    new Player(Player.NEUTRAL);
-    new Player(Player.PLAYER);
-    new Player(Player.ENEMY);
+    target = node;
+    this.dirty = true;
+  }
+  
+  void update(GameLoop gameLoop)
+  {
+  }
+  
+  void draw()
+  {
+    js.scoped(() {
+      if (target != null)
+      {
+        _targetImage.show();
+        _targetImage.moveToTop();
+        _targetImage.setPosition(target.center.x - _targetImage.getWidth() * _targetImage.getScale().x * 0.5, 
+                                 target.pos.y - _targetImage.getHeight() * _targetImage.getScale().y * 0.75);
+      }
+      else
+      {
+        _targetImage.hide();
+      }
+     });
+  }
+  
+  static void setup(GameScreen gameScreen)
+  {
+    NeutralPlayer = new Player(Player.NEUTRAL, gameScreen);
+    CurrentPlayer = new Player(Player.PLAYER, gameScreen);
+    EnemyPlayer = new Player(Player.ENEMY, gameScreen);
   }
   
   static Player get(num playerId)

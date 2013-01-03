@@ -20,7 +20,7 @@ class GameplayScreen extends GameScreen
   GameplayScreen(ScreenManager screenManager) 
     : super(screenManager)
   {
-    Player.setup();
+    Player.setup(this);
     
     var worldSize = new Size(width: 640, height: 480);
     var nodeScale = 0.5;

@@ -94,7 +94,7 @@ class FortNode extends Button
   
   void onClick(Button button)
   {
-    print("Clicked a fort node");
+    Player.CurrentPlayer.setTarget(this);
   }
   
   void changePlayer(Player newPlayer)
