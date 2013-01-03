@@ -51,6 +51,8 @@ class FortNode extends Button
          }
        )));
        
+       _textShape.hide();
+       
        screen.layer.add(_textShape);
      });
   }
