@@ -22,7 +22,7 @@ class Agent extends ImageScreenElement {
   Player owner;
   
   bool get isMoving => _path != null;
-  bool get isAttacking => this.home.player != owner;
+  bool get isAttacking => this.target != null && this.target.player != owner;
       
   Agent(this.home, GameScreen gameScreen) 
     : super(TextureManager.get('agent.png'), gameScreen)
@@ -44,7 +44,7 @@ class Agent extends ImageScreenElement {
   void update(GameLoop gameLoop)
   {
     js.scoped(() {
-      if(isMoving && !isAttacking)
+      if(isMoving)
       {
         if(!shape.isVisible())
         {
@@ -59,16 +59,25 @@ class Agent extends ImageScreenElement {
         var updatedPosition = this.center;
         if(distance(updatedPosition, this.target.center) < NODE_DISTANCE)
         {
-          this.home.removeUnit(this);
-          this.target.addUnit(this);
-          
-          if(this.target.canAcceptUnits() || this.target.player != this.owner)
+          if(isAttacking)
           {
+            this.target.attack(this);
+            this.home.removeUnit(this);
+            this.screen.removeElement(this);
+          }
+          else if(this.target.canAcceptUnits())
+          { 
+            this.home.removeUnit(this);
+            this.target.addUnit(this);
+            
             this.home = this.target;
             this._path = null;
           }
           else
           {
+            this.home.removeUnit(this);
+            this.target.addUnit(this);
+            
             var tempTarget = this.target;
             this.target = this.home;
             this.home = tempTarget;
@@ -76,11 +85,6 @@ class Agent extends ImageScreenElement {
         }
         
         this.dirty = true;
-      }
-      
-      if(isAttacking)
-      {
-        this.home.attack();
       }
       
       if(!isMoving && !isAttacking && shape.isVisible())

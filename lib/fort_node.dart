@@ -23,7 +23,7 @@ class FortNode extends Button
   final List<FortPath> neighbours = new List<FortPath>();
   final List<Agent> units = new List<Agent>();
   
-  int get unitCount => units.filter((unit) => !unit.isMoving).length;
+  int get unitCount => units.filter((unit) => !unit.isMoving && !unit.isAttacking).length;
   bool get isEnemyNode => !this.player.isCurrent;
   
   js.Proxy _textShape;
@@ -74,10 +74,23 @@ class FortNode extends Button
     });
   }
   
-  void attack()
+  Collection<Agent> defendingUnits()
   {
-    changePlayer(Player.CurrentPlayer);
-    Player.CurrentPlayer.resetTarget();
+    return units.filter((unit) => !unit.isMoving && !unit.isAttacking);
+  }
+  
+  void attack(Agent attackingUnit)
+  {
+    if(unitCount > 0)
+    {
+      var defenderToRemove = firstOrDefault(this.defendingUnits());
+      this.removeUnit(defenderToRemove);
+    }
+    else
+    {
+      changePlayer(Player.CurrentPlayer);
+      Player.CurrentPlayer.resetTarget();
+    }
   }
   
   void update(GameLoop gameLoop)
@@ -96,16 +109,21 @@ class FortNode extends Button
     {
       var path = getNeighbour(player.target);
       
-      var availableUnits = units.filter((unit) => !unit.isMoving).iterator();
+      var availableUnit = firstOrDefault(units.filter((unit) => !unit.isMoving));
       
-      if(availableUnits.hasNext)
-      {
-        var availableUnit = availableUnits.next();
-        
-        if (availableUnit != null) 
-          availableUnit.marchTowards(path);
-      }
+      if (availableUnit != null) 
+        availableUnit.marchTowards(path);
     }
+  }
+  
+  dynamic firstOrDefault(Collection<dynamic> collection)
+  {
+    var iterator = collection.iterator();
+    if(iterator.hasNext)
+    {
+      return iterator.next();
+    }
+    return null;
   }
   
   bool isNeighbour(FortNode node)
