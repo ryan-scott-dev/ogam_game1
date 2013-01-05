@@ -57,12 +57,22 @@ class Agent extends ImageScreenElement {
         shape.move(offset.x, offset.y);
         
         var updatedPosition = this.center;
-        if(distance(updatedPosition, this.target.center) < NODE_DISTANCE){
+        if(distance(updatedPosition, this.target.center) < NODE_DISTANCE)
+        {
           this.home.removeUnit(this);
           this.target.addUnit(this);
           
-          this.home = this.target;
-          this._path = null;
+          if(this.target.canAcceptUnits() || this.target.player != this.owner)
+          {
+            this.home = this.target;
+            this._path = null;
+          }
+          else
+          {
+            var tempTarget = this.target;
+            this.target = this.home;
+            this.home = tempTarget;
+          }
         }
         
         this.dirty = true;

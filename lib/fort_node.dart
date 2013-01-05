@@ -118,9 +118,14 @@ class FortNode extends Button
     return neighbours.filter((path) => path.nodeA == node || path.nodeB == node).iterator().next();
   }
   
+  bool canAcceptUnits()
+  {
+    return unitCount < MAX_UNITS && !this.player.isNeutral;
+  }
+  
   void generateNewUnits(GameLoop gameLoop)
   {
-    if(unitCount < MAX_UNITS && !this.player.isNeutral)
+    if(canAcceptUnits())
     {
       if(unitTimer < UNIT_WAIT)
       {
