@@ -11,6 +11,7 @@ import 'screen_element.dart';
 import 'game_screen.dart';
 import 'image_screen_element.dart';
 import 'texture_manager.dart';
+import 'player.dart';
 
 class Agent extends ImageScreenElement {
   static const num MOVE_SPEED = 1;
@@ -18,14 +19,16 @@ class Agent extends ImageScreenElement {
   
   FortNode home, target;
   FortPath _path;
+  Player owner;
   
   bool get isMoving => _path != null;
-  bool get isAttacking => this.home.isEnemyNode;
+  bool get isAttacking => this.home.player != owner;
       
   Agent(this.home, GameScreen gameScreen) 
     : super(TextureManager.get('agent.png'), gameScreen)
   {    
     this.pos = this.home.pos;
+    this.owner = this.home.player;
   }
   
   void marchTowards(FortPath path)

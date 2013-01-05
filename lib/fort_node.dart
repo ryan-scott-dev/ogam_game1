@@ -23,12 +23,12 @@ class FortNode extends Button
   final List<FortPath> neighbours = new List<FortPath>();
   final List<Agent> units = new List<Agent>();
   
-  int get unitCount => units.length;
-  bool get isEnemyNode => !this._player.isCurrent;
+  int get unitCount => units.filter((unit) => !unit.isMoving).length;
+  bool get isEnemyNode => !this.player.isCurrent;
   
   js.Proxy _textShape;
   
-  Player _player;
+  Player player;
   num unitTimer = 0;
   
   FortNode(GameScreen gameScreen) 
@@ -63,7 +63,7 @@ class FortNode extends Button
       _textShape.setText(unitCount.toString());
       _textShape.setPosition(center.x - _textShape.getWidth() / 2.0, center.y - _textShape.getHeight() / 2.0);
       
-      if(_player.isNeutral)
+      if(player.isNeutral)
       {
         _textShape.hide();
       }
@@ -89,12 +89,12 @@ class FortNode extends Button
   
   void moveUnitsToNearbyTargets(GameLoop gameLoop)
   {
-    if(!_player.isCurrent)
+    if(!player.isCurrent)
       return;
     
-    if(_player.target != null && isNeighbour(_player.target))
+    if(player.target != null && isNeighbour(player.target))
     {
-      var path = getNeighbour(_player.target);
+      var path = getNeighbour(player.target);
       
       var availableUnits = units.filter((unit) => !unit.isMoving).iterator();
       
@@ -120,7 +120,7 @@ class FortNode extends Button
   
   void generateNewUnits(GameLoop gameLoop)
   {
-    if(unitCount < MAX_UNITS && !this._player.isNeutral)
+    if(unitCount < MAX_UNITS && !this.player.isNeutral)
     {
       if(unitTimer < UNIT_WAIT)
       {
@@ -156,7 +156,7 @@ class FortNode extends Button
   
   void changePlayer(Player newPlayer)
   {
-    _player = newPlayer;
+    player = newPlayer;
     
     js.scoped(() {
       shape.setImage(TextureManager.get(newPlayer.getPlayerImage()).image);
