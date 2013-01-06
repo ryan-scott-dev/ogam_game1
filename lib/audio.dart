@@ -3,10 +3,6 @@ library audio;
 import 'dart:html';
 import 'dart:web_audio';
 
-import 'package:vector_math/vector_math_browser.dart';
-
-import 'size.dart';
-
 typedef AudioLoadDelegate(Audio audio);
 
 class Audio {
@@ -42,7 +38,7 @@ class Audio {
     source.start(when);
   }
   
-  void postLoad(AudioBuffer buffer)
+  void setDecodedBuffer(AudioBuffer buffer)
   {
     this._buffer = buffer;
   }

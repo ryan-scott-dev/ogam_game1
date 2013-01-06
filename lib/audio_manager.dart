@@ -40,7 +40,7 @@ class AudioManager {
       print('Loaded audio file $audioName');
       
       audioContext.decodeAudioData(xhr.response, (buffer) {
-        audio.postLoad(buffer);
+        audio.setDecodedBuffer(buffer);
         
         if(callback != null)
           callback(audio);
