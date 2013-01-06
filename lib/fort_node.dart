@@ -43,9 +43,9 @@ class FortNode extends Button
        _textShape = js.retain(new js.Proxy(kinetic.Text, js.map({
          'text': 'test',
          'fontSize': 24,
-         'textFill': '#E7F2DF',
+         'textFill': '#000',
          'textShadow': {
-           'color': '#555',
+           'color': '#FFF',
            'blur': 1,
            'offset': [1, 1],
            'opacity': 0.7},
