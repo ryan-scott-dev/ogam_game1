@@ -56,7 +56,7 @@ class Button extends ImageScreenElement {
   
   void click()
   {
-    AudioManager.get('test.ogg').play();
+    AudioManager.get('click.ogg').play();
     _callback(this);
   }
   
