@@ -7,8 +7,9 @@ import 'package:js/js.dart' as js;
 
 import 'screen_element.dart';
 import 'fort_node.dart';
-import 'game_screen.dart';
+import 'gameplay_screen.dart';
 import 'texture_manager.dart';
+import 'enemy.dart';
 
 class Player extends ScreenElement {
   
@@ -30,7 +31,7 @@ class Player extends ScreenElement {
   FortNode target;
   js.Proxy _targetImage;
   
-  Player(this.playerId, GameScreen gameScreen) 
+  Player(this.playerId, GameplayScreen gameScreen) 
     : super(gameScreen)
   {
     players[this.playerId] = this;
@@ -98,11 +99,11 @@ class Player extends ScreenElement {
      });
   }
   
-  static void setup(GameScreen gameScreen)
+  static void setup(GameplayScreen gameScreen)
   {
     NeutralPlayer = new Player(Player.NEUTRAL, gameScreen);
     CurrentPlayer = new Player(Player.PLAYER, gameScreen);
-    EnemyPlayer = new Player(Player.ENEMY, gameScreen);
+    EnemyPlayer = new Enemy(gameScreen);
   }
   
   static Player get(num playerId)

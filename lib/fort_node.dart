@@ -89,8 +89,8 @@ class FortNode extends Button
     }
     else
     {
-      changePlayer(Player.CurrentPlayer);
-      Player.CurrentPlayer.resetTarget();
+      changePlayer(attackingUnit.owner);
+      attackingUnit.owner.resetTarget();
     }
   }
   
@@ -124,7 +124,7 @@ class FortNode extends Button
   
   void moveUnitsToNearbyTargets(GameLoop gameLoop)
   {
-    if(!player.isCurrent)
+    if(player.isNeutral)
       return;
     
     if(player.target != null && isNeighbour(player.target))

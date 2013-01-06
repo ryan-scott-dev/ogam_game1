@@ -34,6 +34,11 @@ class FortPath extends ScreenElement{
       return nodeA == node || nodeB == node;
     }
     
+    FortNode alternateNode(FortNode node)
+    {
+      return node == nodeA ? nodeB : nodeA; 
+    }
+    
     void draw()
     {
     }
