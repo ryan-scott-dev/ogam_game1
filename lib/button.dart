@@ -10,6 +10,7 @@ import 'texture.dart';
 import 'texture_manager.dart';
 import 'image_screen_element.dart';
 import 'game_screen.dart';
+import 'audio_manager.dart';
 
 typedef void ButtonClickCallback(Button button);
 
@@ -55,6 +56,7 @@ class Button extends ImageScreenElement {
   
   void click()
   {
+    AudioManager.get('test.ogg').play();
     _callback(this);
   }
   

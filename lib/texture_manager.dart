@@ -28,7 +28,7 @@ class TextureManager {
         callback(texture);
       
       _texturesLoading.removeAt(_texturesLoading.indexOf(texture));
-      if(_texturesLoading.length == 0)
+      if(_texturesLoading.length == 0 && onLoadComplete != null)
       {    
         onLoadComplete();
       }
