@@ -15,7 +15,7 @@ class Game {
   GameLoop gameLoop;
   ScreenManager screenManager;
   CanvasRenderingContext2D renderContext;
-  List<String> resources;
+  Map<String, List<String>> resources;
   int loadedResources = 0;
   LoadingScreen loadingScreen;
   
@@ -27,7 +27,7 @@ class Game {
 
   void load()
   {
-    for(var file in resources)
+    for(var file in resources['textures'])
     {
       TextureManager.load(file, callback: fileLoaded);  
     }
