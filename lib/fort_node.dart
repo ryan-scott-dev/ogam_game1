@@ -19,6 +19,7 @@ class FortNode extends Button
 {
   static const MAX_UNITS = 5;
   static const UNIT_WAIT = 3;
+  static const ATTACK_WAIT = 2;
   
   final List<FortPath> neighbours = new List<FortPath>();
   final List<Agent> units = new List<Agent>();
@@ -29,7 +30,7 @@ class FortNode extends Button
   js.Proxy _textShape;
   
   Player player;
-  num unitTimer = 0;
+  num unitTimer = 0, attackTimer = 0;
   
   FortNode(GameScreen gameScreen) 
     : super(new vec2(0, 0), 'node_neutral.png', null, gameScreen)
@@ -100,6 +101,27 @@ class FortNode extends Button
     moveUnitsToNearbyTargets(gameLoop);
   }
   
+  void generateNewUnits(GameLoop gameLoop)
+  {
+    if(canAcceptUnits())
+    {
+      if(unitTimer < UNIT_WAIT)
+      {
+        unitTimer += gameLoop.dt;
+      }
+      else
+      {
+        unitTimer = 0;
+        
+        var newUnit = new Agent(this, screen);
+        addUnit(newUnit);
+        screen.addScreenElement(newUnit);
+        
+        this.dirty = true;
+      }
+    }
+  }
+  
   void moveUnitsToNearbyTargets(GameLoop gameLoop)
   {
     if(!player.isCurrent)
@@ -107,12 +129,25 @@ class FortNode extends Button
     
     if(player.target != null && isNeighbour(player.target))
     {
-      var path = getNeighbour(player.target);
-      
-      var availableUnit = firstOrDefault(units.filter((unit) => !unit.isMoving));
-      
-      if (availableUnit != null) 
-        availableUnit.marchTowards(path);
+      if(attackTimer < ATTACK_WAIT)
+      {
+        attackTimer += gameLoop.dt;
+      }
+      else
+      {
+        attackTimer = 0;
+        
+        var path = getNeighbour(player.target);
+        
+        var availableUnit = firstOrDefault(units.filter((unit) => !unit.isMoving));
+        
+        if (availableUnit != null) 
+          availableUnit.marchTowards(path);
+      }
+    }
+    else
+    {
+      attackTimer = 0;
     }
   }
   
@@ -139,27 +174,6 @@ class FortNode extends Button
   bool canAcceptUnits()
   {
     return unitCount < MAX_UNITS && !this.player.isNeutral;
-  }
-  
-  void generateNewUnits(GameLoop gameLoop)
-  {
-    if(canAcceptUnits())
-    {
-      if(unitTimer < UNIT_WAIT)
-      {
-        unitTimer += gameLoop.dt;
-      }
-      else
-      {
-        unitTimer = 0;
-        
-        var newUnit = new Agent(this, screen);
-        addUnit(newUnit);
-        screen.addScreenElement(newUnit);
-        
-        this.dirty = true;
-      }
-    }
   }
   
   void addUnit(Agent agent)

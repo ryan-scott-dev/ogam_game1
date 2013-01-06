@@ -51,7 +51,7 @@ class Agent extends ImageScreenElement {
           shape.show();  
         }
         
-        var direction = normalize(this.target.center - this.center);        
+        var direction = normalize(this.target.center - this.center);
         var offset = direction * MOVE_SPEED * gameLoop.dt;
         
         shape.move(offset.x, offset.y);
