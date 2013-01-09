@@ -11,6 +11,9 @@ import 'game_screen.dart';
 import 'screen_manager.dart';
 import 'fort_node.dart';
 import 'player.dart';
+import 'background.dart';
+import 'image_screen_element.dart';
+import 'texture_manager.dart';
 
 class GameplayScreen extends GameScreen
 {
@@ -98,6 +101,11 @@ class GameplayScreen extends GameScreen
     }
     
     forts[enemyFortId.toInt()].changePlayer(enemy);
+    
+
+    var background = new ImageScreenElement(TextureManager.get('background.png'), this);
+    addScreenElement(background);
+    background.moveToBottom();
   }
   
   num inRange(Random rng, num min, num max)

@@ -3,12 +3,13 @@ library image_screen_element;
 import 'screen_element.dart';
 import 'package:js/js.dart' as js;
 import 'package:vector_math/vector_math_browser.dart';
+import 'package:game_loop/game_loop.dart';
 
 import 'game_screen.dart';
 import 'texture.dart';
 import 'size.dart';
 
-abstract class ImageScreenElement extends ScreenElement {
+class ImageScreenElement extends ScreenElement {
   
   Texture _texture;
   Texture get texture => _texture;
@@ -32,6 +33,10 @@ abstract class ImageScreenElement extends ScreenElement {
       shape = js.retain(new js.Proxy(kinetic.Image, js.map({'image': texture.image})));
       screen.layer.add(shape);
     });
+  }
+  
+  void update(GameLoop gameLoop)
+  {
   }
   
   void draw()

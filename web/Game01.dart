@@ -10,7 +10,7 @@ void main() {
 
   var game = new Game();
   game.resources = {
-                    'textures': ['new_game.png', 'about.png', 'node_neutral.png', 'node_player.png', 'node_enemy.png', 'agent.png', 'order.png'],
+                    'textures': ['background.png', 'heading.png', 'new_game.png', 'about.png', 'node_neutral.png', 'node_player.png', 'node_enemy.png', 'agent.png', 'order.png'],
                     'audio' : ['click.ogg']
                    };
   game.start();

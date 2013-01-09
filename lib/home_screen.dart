@@ -12,24 +12,29 @@ import 'button.dart';
 import 'background.dart';
 
 import 'gameplay_screen.dart';
-import 'about_screen.dart';
+import 'image_screen_element.dart';
+import 'texture_manager.dart';
+import 'size.dart';
 
 class HomeScreen extends GameScreen 
 {
   HomeScreen(ScreenManager screenManager) : super(screenManager)
   {
-    var background = new Background("#000000", this);
+    var background = new ImageScreenElement(TextureManager.get('background.png'), this);
     addScreenElement(background);
     
-    var new_game_button = new Button(new vec2(170, 100), "new_game.png", 
+    var new_game_button = new Button(new vec2(0, 200), "new_game.png", 
         (button) => showGame(), this); 
+    new_game_button.scale = new Size(width: 0.5, height: 0.5);
+    new_game_button.pos = new vec2(screenManager.screenWidth / 2.0 - new_game_button.size.width / 2.0, 
+                                   screenManager.screenHeight / 2.0 - new_game_button.size.height / 2.0);
     
     addScreenElement(new_game_button);
     
-    var about_button = new Button(new vec2(170, 220), "about.png", 
-        (button) => showAbout(), this); 
+    var heading = new ImageScreenElement(TextureManager.get('heading.png'), this);
+    heading.pos = new vec2(screenManager.screenWidth / 2.0 - heading.size.width / 2.0, 150);
     
-    addScreenElement(about_button);
+    addScreenElement(heading);
   }
   
   void showGame()
@@ -38,13 +43,5 @@ class HomeScreen extends GameScreen
     screenManager.setScreen(new GameplayScreen(screenManager));
     
     print("Now showing game");
-  }
-  
-  void showAbout()
-  {
-    document.body.style.cursor = 'default';
-    screenManager.setScreen(new AboutScreen(screenManager));
-    
-    print("Now showing about");
   }
 }

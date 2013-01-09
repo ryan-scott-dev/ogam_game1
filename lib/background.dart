@@ -11,7 +11,6 @@ import 'screen_element.dart';
 
 class Background extends ScreenElement {
   String fill;
-  js.Proxy _shape;
   
   Background(String fill, GameScreen gameScreen) : super(gameScreen) 
   {
@@ -19,10 +18,10 @@ class Background extends ScreenElement {
     
     js.scoped(() {
       var kinetic = js.context.Kinetic;
-      _shape = js.retain(new js.Proxy(kinetic.Rect, js.map({'fill': fill, 'x': 0, 'y': 0, 
+      shape = js.retain(new js.Proxy(kinetic.Rect, js.map({'fill': fill, 'x': 0, 'y': 0, 
         'width': gameScreen.width, 'height': gameScreen.height})));
       
-      gameScreen.layer.add(_shape);
+      gameScreen.layer.add(shape);
     });
   }
   
