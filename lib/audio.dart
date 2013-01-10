@@ -10,6 +10,8 @@ class Audio {
   final List<AudioLoadDelegate> onLoadCallbacks = new List<AudioLoadDelegate>();
   
   bool loaded = false; 
+  bool _failed = false;
+  
   AudioBuffer _buffer;
   AudioContext _audioContext;
   
@@ -31,16 +33,25 @@ class Audio {
   
   void play({num when : 0})
   {
-    print('playing');
-    var source = _audioContext.createBufferSource();
-    source.buffer = _buffer;
-    source.connect(_audioContext.destination, 0, 0);
-    source.start(when);
+    if(loaded && !this._failed)
+    {
+      print('playing');
+      
+      var source = _audioContext.createBufferSource();
+      source.buffer = _buffer;
+      source.connect(_audioContext.destination, 0, 0);
+      source.start(when);
+    }
   }
   
   void setDecodedBuffer(AudioBuffer buffer)
   {
     this._buffer = buffer;
+  }
+  
+  void onLoadFailure()
+  {
+    this._failed = true;
   }
   
   void onLoad(AudioLoadDelegate callback)

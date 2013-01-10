@@ -37,20 +37,35 @@ class AudioManager {
     _audiosLoading.add(audio);
     
     xhr.on.load.add((event) {
-      print('Loaded audio file $audioName');
+      try
+      {
+        print('Loaded audio file $audioName');
       
-      audioContext.decodeAudioData(xhr.response, (buffer) {
-        audio.setDecodedBuffer(buffer);
+        audioContext.decodeAudioData(xhr.response, (buffer) {
+          audio.setDecodedBuffer(buffer);
+        
+          if(callback != null)
+            callback(audio);
+        
+          _audiosLoading.removeAt(_audiosLoading.indexOf(audio));
+          if(_audiosLoading.length == 0 && onLoadComplete != null)
+          {    
+            onLoadComplete();
+          }
+        },
+        (buffer) {
+          audio.onLoadFailure();
+          
+          if(callback != null)
+            callback(audio);
+        });
+      }
+      catch (e) {
+        audio.onLoadFailure();
         
         if(callback != null)
           callback(audio);
-        
-        _audiosLoading.removeAt(_audiosLoading.indexOf(audio));
-        if(_audiosLoading.length == 0 && onLoadComplete != null)
-        {    
-          onLoadComplete();
-        }
-      });
+      }
     });
     
     xhr.send();
