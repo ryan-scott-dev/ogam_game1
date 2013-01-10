@@ -12211,15 +12211,15 @@ $.AudioManager_setup = function(exception) {
 };
 
 $.AudioManager_load = function(audioName, callback) {
-  var audio, xhr, t1;
+  var audio, t1, xhr;
   audio = $.Audio$(audioName, $.AudioManager_audioContext);
+  $.indexSet($.get$AudioManager__audios(), audioName, audio);
+  t1 = $.get$AudioManager__audiosLoading();
+  $.getInterceptor$JSArray(t1).add$1(t1, audio);
   if ($.AudioManager_enabled === true) {
     xhr = $.HttpRequest_HttpRequest();
     xhr.open$3("GET", "audio\\" + $.S(audioName), true);
     xhr.set$responseType("arraybuffer");
-    $.indexSet($.get$AudioManager__audios(), audioName, audio);
-    t1 = $.get$AudioManager__audiosLoading();
-    $.getInterceptor$JSArray(t1).add$1(t1, audio);
     t1 = xhr.get$on().get$load();
     $.getInterceptor$JSArray(t1).add$1(t1, new $.AudioManager_load_anon(callback, audio, audioName, xhr));
     xhr.send$0();

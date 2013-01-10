@@ -43,6 +43,9 @@ class AudioManager {
   static void load(String audioName, {AudioLoadDelegate callback: null})
   {
     Audio audio = new Audio(audioName, audioContext);
+
+    _audios[audioName] = audio;
+    _audiosLoading.add(audio);
     
     if(enabled)
     {
@@ -50,9 +53,6 @@ class AudioManager {
       
       xhr.open("GET", "audio\\$audioName", true);
       xhr.responseType = "arraybuffer";
-      
-      _audios[audioName] = audio;
-      _audiosLoading.add(audio);
       
       xhr.on.load.add((event) {
         try
