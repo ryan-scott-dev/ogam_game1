@@ -6,9 +6,16 @@ import 'package:js/js.dart' as js;
 
 import 'screen_element.dart';
 import 'game_screen.dart';
+import 'size.dart';
 
 class TextElement extends ScreenElement {
   String text;
+  
+  Size get size => js.scoped(() {return new Size(width: shape.getWidth(), height: shape.getHeight());});
+  set fontSize(num value) => js.scoped(() {
+    shape.setFontSize(value);
+    dirty = true;
+  });  
   
   TextElement(GameScreen gameScreen, this.text) 
     : super(gameScreen)
@@ -35,8 +42,7 @@ class TextElement extends ScreenElement {
   }
   
   void draw()
-  {
-    
+  { 
   }
   
   void update(GameLoop gameLoop)

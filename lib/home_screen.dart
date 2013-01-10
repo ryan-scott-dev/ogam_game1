@@ -20,7 +20,7 @@ class HomeScreen extends GameScreen
 {
   HomeScreen(ScreenManager screenManager) : super(screenManager)
   {
-    var background = new ImageScreenElement(TextureManager.get('background.png'), this);
+    var background = new Background("#FFF", this);
     addScreenElement(background);
     
     var new_game_button = new Button(new vec2(0, 200), "new_game.png", 

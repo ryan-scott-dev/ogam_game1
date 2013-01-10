@@ -14,16 +14,34 @@ import 'player.dart';
 import 'background.dart';
 import 'image_screen_element.dart';
 import 'texture_manager.dart';
+import 'text_element.dart';
+import 'button.dart';
 
 class GameplayScreen extends GameScreen
 {
   static final int NodePadding = 10;
   final List<FortNode> forts = new List<FortNode>();
+  bool running = true;
   
   GameplayScreen(ScreenManager screenManager) 
     : super(screenManager)
   {
     Player.setup(this);
+      
+    setupWorld();
+    
+    var background = new ImageScreenElement(TextureManager.get('background.png'), this);
+    addScreenElement(background);
+    background.moveToBottom();
+  }
+  
+  void setupWorld()
+  {
+    for(FortNode fort in forts)
+    {
+      removeElement(fort);
+    }
+    forts.clear();
     
     var worldSize = new Size(width: 640, height: 480);
     var nodeScale = 0.5;
@@ -32,7 +50,6 @@ class GameplayScreen extends GameScreen
     
     for (var i = 0; i < 10; i++)
     {
-      
       var node = new FortNode(this);
       node.scale = new Size(width: nodeScale, height: nodeScale);
       var nodeSize = node.size;
@@ -101,11 +118,70 @@ class GameplayScreen extends GameScreen
     }
     
     forts[enemyFortId.toInt()].changePlayer(enemy);
+  }
+  
+  void update(GameLoop gameLoop)
+  {
+    var playerForts = forts.filter((fort) => fort.player == Player.CurrentPlayer); 
+    var enemyForts = forts.filter((fort) => fort.player == Player.EnemyPlayer);
     
-
-    var background = new ImageScreenElement(TextureManager.get('background.png'), this);
-    addScreenElement(background);
-    background.moveToBottom();
+    if(running)
+    {
+      if(playerForts.length == 0)
+      {
+        displayGameOver();
+      }
+      else if(enemyForts.length == 0)
+      {
+        displayVictory();  
+      }
+      else
+      {
+        super.update(gameLoop);
+      }
+    }
+  }
+  
+  void displayGameOver()
+  {
+    running = false;
+    print("Game Over!");
+    
+    var text = new TextElement(this, "Game Over");
+    text.fontSize = 72;
+    text.pos = new vec2(screenManager.screenWidth / 2.0 - text.size.width / 2.0, 100);
+    
+    addScreenElement(text);
+    
+    var new_game_button = new Button(new vec2(0, 200), "new_game.png", 
+        (button) => restart(), this); 
+    new_game_button.scale = new Size(width: 0.5, height: 0.5);
+    new_game_button.pos = new vec2(screenManager.screenWidth / 2.0 - new_game_button.size.width / 2.0, 
+                                   screenManager.screenHeight / 2.0 - new_game_button.size.height / 2.0);
+    addScreenElement(new_game_button);
+  }
+ 
+  void displayVictory()
+  {
+    running = false;
+    print("You have won!");
+    
+    var text = new TextElement(this, "You won!");
+    text.fontSize = 72;
+    text.pos = new vec2(screenManager.screenWidth / 2.0 - text.size.width / 2.0, 100);
+    addScreenElement(text);
+    
+    var new_game_button = new Button(new vec2(0, 200), "new_game.png", 
+        (button) => restart(), this); 
+    new_game_button.scale = new Size(width: 0.5, height: 0.5);
+    new_game_button.pos = new vec2(screenManager.screenWidth / 2.0 - new_game_button.size.width / 2.0, 
+                                   screenManager.screenHeight / 2.0 - new_game_button.size.height / 2.0);
+    addScreenElement(new_game_button);
+  }
+  
+  void restart()
+  {
+    screenManager.setScreen(new GameplayScreen(screenManager));
   }
   
   num inRange(Random rng, num min, num max)
