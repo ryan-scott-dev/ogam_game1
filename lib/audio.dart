@@ -44,13 +44,16 @@ class Audio {
     }
   }
   
-  void setDecodedBuffer(AudioBuffer buffer)
+  void load(AudioBuffer buffer)
   {
     this._buffer = buffer;
+    this.loaded = true;
   }
   
   void onLoadFailure()
   {
+    print("Failed to load $name");
+    
     this._failed = true;
   }
   
