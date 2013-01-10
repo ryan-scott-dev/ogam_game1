@@ -225,7 +225,7 @@ $$.ConstantMap = {"":"Object;length>,_jsObject,_liblib0$_keys>",
 },
  forEach$1: function(f) {
   var t1 = this._liblib0$_keys;
-  $.getInterceptor$JSArray(t1).forEach$1(t1, new $.ConstantMap_forEach_anon(this, f));
+  $.getInterceptor$JSArray(t1).forEach$1(t1, new $.ConstantMap_forEach_anon(f, this));
 },
  get$keys: function() {
   return this._liblib0$_keys;
@@ -6858,6 +6858,50 @@ $$._ProxiedObjectTable = {"":"Object;_name,_nextId,_deletedCount,_registry>,_por
 }
 };
 
+$$.Game = {"":"Object;gameLoop,screenManager>,renderContext,resources,loadedResources,totalResources,onLoadComplete,loadingScreen",
+ onLoadComplete$0: function() {
+  return this.onLoadComplete.call$0();
+},
+ update$1: function(gameLoop) {
+  this.screenManager.update$1(gameLoop);
+  this.screenManager.draw$0();
+},
+ get$update: function() {
+  return new $.BoundClosure(this, 'update$1');
+},
+ load$0: function() {
+  $.AudioManager_setup();
+  var t1 = this.resources.get$values();
+  this.totalResources = $.getInterceptor$JSArray(t1).reduce$2(t1, 0, new $.Game_load_anon());
+  for (t1 = $.index(this.resources, "textures"), t1 = $.getInterceptor$JSArray(t1).iterator$0(t1); t1.get$hasNext() === true;)
+    $.TextureManager_load(t1.next$0(), this.get$fileLoaded());
+  for (t1 = $.index(this.resources, "audio"), t1 = $.getInterceptor$JSArray(t1).iterator$0(t1); t1.get$hasNext() === true;)
+    $.AudioManager_load(t1.next$0(), this.get$fileLoaded());
+},
+ get$load: function() {
+  return new $.BoundClosure0(this, 'load$0');
+},
+ fileLoaded$1: function(resourceLoaded) {
+  this.loadedResources = this.loadedResources + 1;
+  this.loadingScreen.updateProgress$2(this.loadedResources, this.totalResources);
+  if (this.loadedResources === this.totalResources && !(this.onLoadComplete == null))
+    this.onLoadComplete$0();
+},
+ get$fileLoaded: function() {
+  return new $.BoundClosure(this, 'fileLoaded$1');
+},
+ start$0: function() {
+  this.screenManager = $.ScreenManager$("canvas-container", $.Size$(480, 640));
+  this.loadingScreen = $.LoadingScreen$(this.screenManager);
+  this.screenManager.addScreen$1(this.loadingScreen);
+  this.load$0();
+  this.gameLoop = $.GameLoop$(this.screenManager.get$canvasElement());
+  var t1 = this.get$update();
+  this.gameLoop.set$onUpdate(t1);
+  this.gameLoop.start$0();
+}
+};
+
 $$.Texture = {"":"Object;name,image>,onLoadCallbacks,loaded",
  runLoadCallbacks$0: function() {
   var t1, t2;
@@ -7580,50 +7624,6 @@ $$.Size = {"":"Object;width=,height=",
 }
 };
 
-$$.Game = {"":"Object;gameLoop,screenManager>,renderContext,resources,loadedResources,totalResources,onLoadComplete,loadingScreen",
- onLoadComplete$0: function() {
-  return this.onLoadComplete.call$0();
-},
- update$1: function(gameLoop) {
-  this.screenManager.update$1(gameLoop);
-  this.screenManager.draw$0();
-},
- get$update: function() {
-  return new $.BoundClosure(this, 'update$1');
-},
- load$0: function() {
-  $.AudioManager_setup();
-  var t1 = this.resources.get$values();
-  this.totalResources = $.getInterceptor$JSArray(t1).reduce$2(t1, 0, new $.Game_load_anon());
-  for (t1 = $.index(this.resources, "textures"), t1 = $.getInterceptor$JSArray(t1).iterator$0(t1); t1.get$hasNext() === true;)
-    $.TextureManager_load(t1.next$0(), this.get$fileLoaded());
-  for (t1 = $.index(this.resources, "audio"), t1 = $.getInterceptor$JSArray(t1).iterator$0(t1); t1.get$hasNext() === true;)
-    $.AudioManager_load(t1.next$0(), this.get$fileLoaded());
-},
- get$load: function() {
-  return new $.BoundClosure0(this, 'load$0');
-},
- fileLoaded$1: function(resourceLoaded) {
-  this.loadedResources = this.loadedResources + 1;
-  this.loadingScreen.updateProgress$2(this.loadedResources, this.totalResources);
-  if (this.loadedResources === this.totalResources && !(this.onLoadComplete == null))
-    this.onLoadComplete$0();
-},
- get$fileLoaded: function() {
-  return new $.BoundClosure(this, 'fileLoaded$1');
-},
- start$0: function() {
-  this.screenManager = $.ScreenManager$("canvas-container", $.Size$(480, 640));
-  this.loadingScreen = $.LoadingScreen$(this.screenManager);
-  this.screenManager.addScreen$1(this.loadingScreen);
-  this.load$0();
-  this.gameLoop = $.GameLoop$(this.screenManager.get$canvasElement());
-  var t1 = this.get$update();
-  this.gameLoop.set$onUpdate(t1);
-  this.gameLoop.start$0();
-}
-};
-
 $$.ScreenManager = {"":"Object;_screens,canvasElement>,_stage=",
  get$screens: function() {
   return this._screens;
@@ -7665,7 +7665,7 @@ $$.ScreenManager = {"":"Object;_screens,canvasElement>,_stage=",
 },
  ScreenManager$2: function(canvasId, canvasSize) {
   this.canvasElement = $.document().query$1("#" + $.S(canvasId));
-  $.scoped(new $.anon3(canvasSize, this, canvasId));
+  $.scoped(new $.anon3(this, canvasId, canvasSize));
 }
 };
 
@@ -7801,7 +7801,7 @@ $$.Audio = {"":"Object;name,onLoadCallbacks,loaded,_failed,_liblib2$_buffer,_aud
 $$.LoadingScreen = {"":"GameScreen;progressBar=,screenManager,_layer,dirty,_elements",
  updateProgress$2: function(current, total) {
   var percentage = $.div(current, total);
-  $.scoped(new $.LoadingScreen_updateProgress_anon(this, percentage));
+  $.scoped(new $.LoadingScreen_updateProgress_anon(percentage, this));
   $.print("Loaded " + $.S(percentage) + "%");
 },
  LoadingScreen$1: function(screenManager) {
@@ -8182,7 +8182,7 @@ $$.FortPath = {"":"ScreenElement;nodeA>,nodeB>,shape,dirty,_screen",
  update$1: function(gameLoop) {
 },
  FortPath$3: function(nodeA, nodeB, screen$) {
-  $.scoped(new $.anon8(screen$, this));
+  $.scoped(new $.anon8(this, screen$));
 }
 };
 
@@ -8406,7 +8406,7 @@ $$.Agent = {"":"ImageScreenElement;home=,target=,_path<,owner>,_texture,shape,di
  draw$0: function() {
 },
  update$1: function(gameLoop) {
-  $.scoped(new $.Agent_update_anon(gameLoop, this));
+  $.scoped(new $.Agent_update_anon(this, gameLoop));
 },
  Agent$2: function(home$, gameScreen) {
   this.set$pos(this.home.get$pos());
@@ -8419,7 +8419,7 @@ $$.TextElement = {"":"ScreenElement;text=,shape,dirty,_screen",
   return $.scoped(new $.TextElement_size_anon(this));
 },
  set$fontSize: function(value) {
-  return $.scoped(new $.TextElement_fontSize_anon(value, this));
+  return $.scoped(new $.TextElement_fontSize_anon(this, value));
 },
  draw$0: function() {
 },
@@ -8816,15 +8816,15 @@ $$.invokeClosure_anon = {"":"Closure;closure_0",
 }
 };
 
-$$.invokeClosure_anon0 = {"":"Closure;arg1_1,closure_2",
+$$.invokeClosure_anon0 = {"":"Closure;closure_1,arg1_2",
  call$0: function() {
-  return this.closure_2.call$1(this.arg1_1);
+  return this.closure_1.call$1(this.arg1_2);
 }
 };
 
-$$.invokeClosure_anon1 = {"":"Closure;arg1_3,closure_4,arg2_5",
+$$.invokeClosure_anon1 = {"":"Closure;closure_3,arg2_4,arg1_5",
  call$0: function() {
-  return this.closure_4.call$2(this.arg1_3, this.arg2_5);
+  return this.closure_3.call$2(this.arg1_5, this.arg2_4);
 }
 };
 
@@ -9038,9 +9038,9 @@ $$.ConstantMap_values_anon = {"":"Closure;this_0,result_1",
 }
 };
 
-$$.ConstantMap_forEach_anon = {"":"Closure;this_0,f_1",
+$$.ConstantMap_forEach_anon = {"":"Closure;f_0,this_1",
  call$1: function(key) {
-  return this.f_1.call$2(key, $.index(this.this_0, key));
+  return this.f_0.call$2(key, $.index(this.this_1, key));
 }
 };
 
@@ -9153,14 +9153,14 @@ $$.Proxy__serializeDataTree_anon = {"":"Closure;",
 }
 };
 
-$$.anon3 = {"":"Closure;canvasSize_0,this_1,canvasId_2",
+$$.anon3 = {"":"Closure;this_0,canvasId_1,canvasSize_2",
  call$0: function() {
   var t1, t2, t3, t4;
   t1 = $.context().get$Kinetic().get$Stage();
-  t2 = this.canvasId_2;
-  t3 = this.canvasSize_0;
+  t2 = this.canvasId_1;
+  t3 = this.canvasSize_2;
   t4 = $.retain($.Proxy_Proxy(t1, $.map($.makeLiteralMap(["container", t2, "width", t3.get$width(), "height", t3.get$height()])), $, $, $));
-  this.this_1.set$_stage(t4);
+  this.this_0.set$_stage(t4);
 }
 };
 
@@ -9219,21 +9219,21 @@ $$.Game_load_anon = {"":"Closure;",
 }
 };
 
-$$.AudioManager_load_anon = {"":"Closure;xhr_0,audioName_1,audio_2,callback_3",
+$$.AudioManager_load_anon = {"":"Closure;callback_0,audio_1,audioName_2,xhr_3",
  call$1: function(event$, exception) {
   var t1, t2, t3, t4;
   try {
-    $.print("Loaded audio file " + $.S(this.audioName_1));
+    $.print("Loaded audio file " + $.S(this.audioName_2));
     t1 = $.AudioManager_audioContext;
-    t2 = this.xhr_0.get$response();
-    t3 = this.audio_2;
-    t4 = this.callback_3;
+    t2 = this.xhr_3.get$response();
+    t3 = this.callback_0;
+    t4 = this.audio_1;
     t1.decodeAudioData$3(t2, new $.AudioManager_load__anon(t3, t4), new $.AudioManager_load__anon0(t3, t4));
   } catch (exception) {
     $.unwrapException(exception);
-    t1 = this.audio_2;
+    t1 = this.audio_1;
     t1.onLoadFailure$0();
-    t2 = this.callback_3;
+    t2 = this.callback_0;
     if (!(t2 == null))
       t2.call$1(t1);
   }
@@ -9241,12 +9241,12 @@ $$.AudioManager_load_anon = {"":"Closure;xhr_0,audioName_1,audio_2,callback_3",
 }
 };
 
-$$.AudioManager_load__anon = {"":"Closure;audio_4,callback_5",
+$$.AudioManager_load__anon = {"":"Closure;callback_4,audio_5",
  call$1: function(buffer) {
   var t1, t2, t3, t4;
-  t1 = this.audio_4;
+  t1 = this.audio_5;
   t1.load$1(buffer);
-  t2 = this.callback_5;
+  t2 = this.callback_4;
   if (!(t2 == null))
     t2.call$1(t1);
   t2 = $.get$AudioManager__audiosLoading();
@@ -9259,27 +9259,27 @@ $$.AudioManager_load__anon = {"":"Closure;audio_4,callback_5",
 }
 };
 
-$$.AudioManager_load__anon0 = {"":"Closure;audio_6,callback_7",
+$$.AudioManager_load__anon0 = {"":"Closure;callback_6,audio_7",
  call$1: function(buffer) {
   var t1, t2;
-  t1 = this.audio_6;
+  t1 = this.audio_7;
   t1.onLoadFailure$0();
-  t2 = this.callback_7;
+  t2 = this.callback_6;
   if (!(t2 == null))
     t2.call$1(t1);
 }
 };
 
-$$.TextureManager_load_anon = {"":"Closure;texture_0,callback_1",
+$$.TextureManager_load_anon = {"":"Closure;callback_0,texture_1",
  call$1: function(event$) {
   var t1, t2, t3;
-  t1 = this.callback_1;
+  t1 = this.callback_0;
   if (!(t1 == null))
-    t1.call$1(this.texture_0);
+    t1.call$1(this.texture_1);
   t1 = $.get$TextureManager__texturesLoading();
   t2 = $.getInterceptor$JSArray(t1);
   t3 = $.get$TextureManager__texturesLoading();
-  t2.removeAt$1(t1, $.getInterceptor$JSStringJSArray(t3).indexOf$1(t3, this.texture_0));
+  t2.removeAt$1(t1, $.getInterceptor$JSStringJSArray(t3).indexOf$1(t3, this.texture_1));
   t1 = $.get$TextureManager__texturesLoading();
   if ($.eqB($.getInterceptor$JSStringJSArray(t1).get$length(t1), 0) && !($.TextureManager_onLoadComplete == null))
     $.TextureManager_onLoadComplete.call$0();
@@ -9292,9 +9292,9 @@ $$.anon4 = {"":"Closure;this_0",
 }
 };
 
-$$.LoadingScreen_updateProgress_anon = {"":"Closure;this_0,percentage_1",
+$$.LoadingScreen_updateProgress_anon = {"":"Closure;percentage_0,this_1",
  call$0: function() {
-  this.this_0.get$progressBar().transitionTo$1($.map($.makeLiteralMap(["scale", $.makeLiteralMap(["x", this.percentage_1, "y", 1]), "duration", 0.1])));
+  this.this_1.get$progressBar().transitionTo$1($.map($.makeLiteralMap(["scale", $.makeLiteralMap(["x", this.percentage_0, "y", 1]), "duration", 0.1])));
 }
 };
 
@@ -9443,10 +9443,10 @@ $$.TextElement_size_anon = {"":"Closure;this_0",
 }
 };
 
-$$.TextElement_fontSize_anon = {"":"Closure;value_0,this_1",
+$$.TextElement_fontSize_anon = {"":"Closure;this_0,value_1",
  call$0: function() {
-  var t1 = this.this_1;
-  t1.get$shape().setFontSize$1(this.value_0);
+  var t1 = this.this_0;
+  t1.get$shape().setFontSize$1(this.value_1);
   t1.set$dirty(true);
 }
 };
@@ -9512,13 +9512,13 @@ $$.FortNode_addNeighbour_anon = {"":"Closure;newNeighbour_0",
 }
 };
 
-$$.anon8 = {"":"Closure;screen_0,this_1",
+$$.anon8 = {"":"Closure;this_0,screen_1",
  call$0: function() {
   var t1, t2, t3;
   t1 = $.context().get$Kinetic().get$Line();
-  t2 = this.this_1;
+  t2 = this.this_0;
   t2.set$shape($.retain($.Proxy_Proxy(t1, $.map($.makeLiteralMap(["points", $.array([t2.get$nodeA().get$center().get$x(), t2.get$nodeA().get$center().get$y(), t2.get$nodeB().get$center().get$x(), t2.get$nodeB().get$center().get$y()]), "stroke", "#9CA69D", "strokeWidth", 3])), $, $, $)));
-  t3 = this.screen_0.get$layer();
+  t3 = this.screen_1.get$layer();
   $.getInterceptor$JSArray(t3).add$1(t3, t2.get$shape());
   t2.get$shape().moveToBottom$0();
 }
@@ -9555,14 +9555,14 @@ $$.FortNode_isNeighbour_anon = {"":"Closure;node_0",
 }
 };
 
-$$.Agent_update_anon = {"":"Closure;gameLoop_0,this_1",
+$$.Agent_update_anon = {"":"Closure;this_0,gameLoop_1",
  call$0: function() {
   var t1, offset, t2, t3, tempTarget;
-  t1 = this.this_1;
+  t1 = this.this_0;
   if (t1.get$isMoving() === true) {
     if (t1.get$shape().isVisible$0() !== true)
       t1.get$shape().show$0();
-    offset = $.mul($.mul($.normalize($.sub(t1.get$target().get$center(), t1.get$center()), null), 1), this.gameLoop_0.get$dt());
+    offset = $.mul($.mul($.normalize($.sub(t1.get$target().get$center(), t1.get$center()), null), 1), this.gameLoop_1.get$dt());
     t1.get$shape().move$2(offset.get$x(), offset.get$y());
     if ($.ltB($.distance(t1.get$center(), t1.get$target().get$center()), 20))
       if (t1.get$isAttacking() === true) {
@@ -9788,16 +9788,16 @@ $$._NativeJsSendPort_send_anon = {"":"Closure;this_1,message_2,replyTo_3",
     t1.msg_0 = $._serializeMessage(t1.msg_0);
     t1.reply_1 = $._serializeMessage(t1.reply_1);
   }
-  $._globalState().get$topEventLoop().enqueue$3(isolate, new $._NativeJsSendPort_send__anon(t1, shouldSerialize, t2), "receive " + $.S(msg));
+  $._globalState().get$topEventLoop().enqueue$3(isolate, new $._NativeJsSendPort_send__anon(t1, t2, shouldSerialize), "receive " + $.S(msg));
 }
 };
 
-$$._NativeJsSendPort_send__anon = {"":"Closure;box_0,shouldSerialize_4,this_5",
+$$._NativeJsSendPort_send__anon = {"":"Closure;box_0,this_4,shouldSerialize_5",
  call$0: function() {
   var t1, t2;
-  t1 = this.this_5;
+  t1 = this.this_4;
   if (!(t1.get$_liblib4$_receivePort().get$_liblib4$_callback() == null)) {
-    if (this.shouldSerialize_4 === true) {
+    if (this.shouldSerialize_5 === true) {
       t2 = this.box_0;
       t2.msg_0 = $._deserializeMessage(t2.msg_0);
       t2.reply_1 = $._deserializeMessage(t2.reply_1);
@@ -10014,22 +10014,6 @@ $.JSON_stringify = function(object) {
   return $._JsonStringifier_stringify(object);
 };
 
-$.shr = function(a, b) {
-  if ($.checkNumbers(a, b)) {
-    if (b < 0)
-      throw $.$$throw($.ArgumentError$(b));
-    if (a > 0) {
-      if (b > 31)
-        return 0;
-      return a >>> b;
-    }
-    if (b > 31)
-      b = 31;
-    return (a >> b) >>> 0;
-  }
-  return a.operator$shr$1(b);
-};
-
 $.shl = function(a, b) {
   if ($.checkNumbers(a, b)) {
     if (b < 0)
@@ -10121,6 +10105,22 @@ $.checkNum = function(value) {
   return value;
 };
 
+$.shr = function(a, b) {
+  if ($.checkNumbers(a, b)) {
+    if (b < 0)
+      throw $.$$throw($.ArgumentError$(b));
+    if (a > 0) {
+      if (b > 31)
+        return 0;
+      return a >>> b;
+    }
+    if (b > 31)
+      b = 31;
+    return (a >> b) >>> 0;
+  }
+  return a.operator$shr$1(b);
+};
+
 $.checkString = function(value) {
   if (!(typeof value === 'string'))
     throw $.$$throw($.ArgumentError$(value));
@@ -10207,9 +10207,9 @@ $.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
   if ($.eqB(numberOfArguments, 0))
     return $._callInIsolate(isolate, new $.invokeClosure_anon(closure));
   else if ($.eqB(numberOfArguments, 1))
-    return $._callInIsolate(isolate, new $.invokeClosure_anon0(arg1, closure));
+    return $._callInIsolate(isolate, new $.invokeClosure_anon0(closure, arg1));
   else if ($.eqB(numberOfArguments, 2))
-    return $._callInIsolate(isolate, new $.invokeClosure_anon1(arg1, closure, arg2));
+    return $._callInIsolate(isolate, new $.invokeClosure_anon1(closure, arg2, arg1));
   else
     throw $.$$throw($.Exception_Exception("Unsupported number of arguments for wrapped closure"));
 };
@@ -10823,12 +10823,12 @@ $._JsonParser$ = function(json) {
   return t1;
 };
 
-$.RuntimeError$ = function(message) {
-  return new $.RuntimeError(message);
-};
-
 $.Game$ = function() {
   return new $.Game(null, null, null, null, 0, 0, null, null);
+};
+
+$.RuntimeError$ = function(message) {
+  return new $.RuntimeError(message);
 };
 
 $.StackOverflowError$ = function() {
@@ -10857,12 +10857,6 @@ $._LocalSendPortSync$_internal = function(_receivePort) {
   return new $._LocalSendPortSync(_receivePort);
 };
 
-$.Callback$many = function(f) {
-  var t1 = new $.Callback(null, null, null);
-  t1.Callback$many$1(f);
-  return t1;
-};
-
 $._RemoteSendPortSync$ = function(_isolateId, _portId) {
   return new $._RemoteSendPortSync(_isolateId, _portId);
 };
@@ -10879,6 +10873,12 @@ $._RemoteSendPortSync__call = function(isolateId, portId, message) {
   $._dispatchEvent(target, [source, message]);
   $.index($.window().get$on(), source).remove$1(listener);
   return t1.result_0;
+};
+
+$.Callback$many = function(f) {
+  var t1 = new $.Callback(null, null, null);
+  t1.Callback$many$1(f);
+  return t1;
 };
 
 $.ScreenManager$ = function(canvasId, canvasSize) {
@@ -10929,19 +10929,19 @@ $.ReceivePortSync__getListenerName = function(isolateId, portId) {
   return "dart-port-" + $.S(isolateId) + "-" + $.S(portId);
 };
 
+$.ReceivePortSync__lookup = function(isolateId, portId) {
+  if ($.eqB(isolateId, $.ReceivePortSync__isolateId()))
+    return $.index($.ReceivePortSync__portMap, portId).toSendPort$0();
+  else
+    return $._RemoteSendPortSync$(isolateId, portId);
+};
+
 $.Set_Set = function() {
   return $._HashSetImpl$();
 };
 
 $._JsDeserializer$ = function() {
   return new $._JsDeserializer(null);
-};
-
-$.ReceivePortSync__lookup = function(isolateId, portId) {
-  if ($.eqB(isolateId, $.ReceivePortSync__isolateId()))
-    return $.index($.ReceivePortSync__portMap, portId).toSendPort$0();
-  else
-    return $._RemoteSendPortSync$(isolateId, portId);
 };
 
 $.LinkedHashMap_LinkedHashMap = function() {
@@ -10978,12 +10978,12 @@ $.StringBuffer_StringBuffer = function(content$) {
   return $._StringBufferImpl$(content$);
 };
 
-$.StackTrace$ = function(stack) {
-  return new $.StackTrace(stack);
-};
-
 $.FormatException$ = function(message) {
   return new $.FormatException(message);
+};
+
+$.StackTrace$ = function(stack) {
+  return new $.StackTrace(stack);
 };
 
 $._IsolateContext$ = function() {
@@ -11087,6 +11087,19 @@ $.Strings__toJsStringArray = function(strings) {
   return array;
 };
 
+$._convertDartToNative_PrepareForStructuredClone = function(value) {
+  var values, copies, t1, t2, t3, t4, copy;
+  values = [];
+  copies = [];
+  t1 = new $._convertDartToNative_PrepareForStructuredClone_findSlot(values, copies);
+  t2 = new $._convertDartToNative_PrepareForStructuredClone_readSlot(copies);
+  t3 = new $._convertDartToNative_PrepareForStructuredClone_writeSlot(copies);
+  t4 = new $._convertDartToNative_PrepareForStructuredClone_cleanupSlots();
+  copy = new $._convertDartToNative_PrepareForStructuredClone_walk(t1, t2, t3).call$1(value);
+  t4.call$0();
+  return copy;
+};
+
 $.Queue_Queue = function() {
   return $.DoubleLinkedQueue$();
 };
@@ -11166,19 +11179,6 @@ $.Collections__containsRef = function(c, ref) {
 
 $._globalState = function() {
   return $globalState;
-};
-
-$._convertDartToNative_PrepareForStructuredClone = function(value) {
-  var values, copies, t1, t2, t3, t4, copy;
-  values = [];
-  copies = [];
-  t1 = new $._convertDartToNative_PrepareForStructuredClone_findSlot(values, copies);
-  t2 = new $._convertDartToNative_PrepareForStructuredClone_readSlot(copies);
-  t3 = new $._convertDartToNative_PrepareForStructuredClone_writeSlot(copies);
-  t4 = new $._convertDartToNative_PrepareForStructuredClone_cleanupSlots();
-  copy = new $._convertDartToNative_PrepareForStructuredClone_walk(t1, t2, t3).call$1(value);
-  t4.call$0();
-  return copy;
 };
 
 $.Proxy__forward = function(receiver, member, kind, args) {
@@ -11435,14 +11435,6 @@ $._convertNativeToDart_EventTarget = function(e) {
     return e;
 };
 
-$.Collections_some = function(iterable, f) {
-  var t1;
-  for (t1 = $.getInterceptor$JSArray(iterable).iterator$0(iterable); t1.get$hasNext() === true;)
-    if (f.call$1(t1.next$0()) === true)
-      return true;
-  return false;
-};
-
 $.Proxy_Proxy = function(constructor$, arg1, arg2, arg3, arg4) {
   var t1, t2, t3, t4, arguments$;
   t1 = $ === arg1;
@@ -11505,7 +11497,7 @@ $.TextureManager_load = function(textureName, callback) {
   t1 = $.get$TextureManager__texturesLoading();
   $.getInterceptor$JSArray(t1).add$1(t1, texture);
   t1 = img.get$on().get$load();
-  $.getInterceptor$JSArray(t1).add$1(t1, new $.TextureManager_load_anon(texture, callback));
+  $.getInterceptor$JSArray(t1).add$1(t1, new $.TextureManager_load_anon(callback, texture));
 };
 
 $.Primitives_getHours = function(receiver) {
@@ -11529,6 +11521,14 @@ $.Texture$ = function(name$, image) {
   var t1 = new $.Texture(name$, image, $.List_List(null), false);
   t1.Texture$2(name$, image);
   return t1;
+};
+
+$.Collections_some = function(iterable, f) {
+  var t1;
+  for (t1 = $.getInterceptor$JSArray(iterable).iterator$0(iterable); t1.get$hasNext() === true;)
+    if (f.call$1(t1.next$0()) === true)
+      return true;
+  return false;
 };
 
 $.Primitives_printString = function(string) {
@@ -11581,14 +11581,14 @@ $.ImageScreenElement$ = function(texture, gameScreen) {
   return t1;
 };
 
-$.TextureManager_get = function(textureName) {
-  return $.index($.get$TextureManager__textures(), textureName);
+$.vec2$zero = function() {
+  var t1 = new $.vec2(null, null);
+  t1.vec2$zero$0();
+  return t1;
 };
 
-$.vec2$copy = function(other) {
-  var t1 = new $.vec2(null, null);
-  t1.vec2$copy$1(other);
-  return t1;
+$.TextureManager_get = function(textureName) {
+  return $.index($.get$TextureManager__textures(), textureName);
 };
 
 $.Collections_every = function(iterable, f) {
@@ -11610,13 +11610,28 @@ $.ImageElement_ImageElement = function(height, src, width) {
   return e;
 };
 
-$._FutureImpl$ = function() {
-  return new $._FutureImpl(false, null, null, null, false, false, [], [], []);
+$.Futures_wait = function(futures) {
+  var t1, completer, result, values, i, future;
+  t1 = {};
+  if (typeof futures !== 'string' && (typeof futures !== 'object' || futures === null || futures.constructor !== Array && !futures.is$JavaScriptIndexingBehavior()))
+    return $.Futures_wait$bailout(1, futures, t1);
+  if ($.getInterceptor$JSStringJSArray(futures).get$isEmpty(futures) === true)
+    return $.Future_Future$immediate($.CONSTANT8);
+  completer = $.Completer_Completer();
+  result = completer.get$future();
+  t1.remaining_0 = futures.length;
+  values = $.List_List(futures.length);
+  for (i = 0; i < futures.length; ++i) {
+    future = futures[i];
+    future.then$1(new $.Futures_wait_anon(t1, values, completer, result, i));
+    future.handleException$1(new $.Futures_wait_anon0(future, completer, result));
+  }
+  return result;
 };
 
-$.vec2$zero = function() {
+$.vec2$copy = function(other) {
   var t1 = new $.vec2(null, null);
-  t1.vec2$zero$0();
+  t1.vec2$copy$1(other);
   return t1;
 };
 
@@ -11624,8 +11639,10 @@ $._MainManagerStub$ = function() {
   return new $._MainManagerStub();
 };
 
-$.Completer_Completer = function() {
-  return $._CompleterImpl$();
+$._FutureImpl__FutureImpl$immediate = function(value) {
+  var res = $._FutureImpl$();
+  res._setValue$1(value);
+  return res;
 };
 
 $.FutureAlreadyCompleteException$ = function() {
@@ -11659,45 +11676,28 @@ $.FutureUnhandledException$ = function(source, stackTrace) {
   return new $.FutureUnhandledException(source, stackTrace);
 };
 
+$.Completer_Completer = function() {
+  return $._CompleterImpl$();
+};
+
+$._NativeJsSendPort$ = function(_receivePort, isolateId) {
+  return new $._NativeJsSendPort(_receivePort, isolateId);
+};
+
 $.FutureNotCompleteException$ = function() {
   return new $.FutureNotCompleteException();
 };
 
-$._FutureImpl__FutureImpl$immediate = function(value) {
-  var res = $._FutureImpl$();
-  res._setValue$1(value);
-  return res;
+$._FutureImpl$ = function() {
+  return new $._FutureImpl(false, null, null, null, false, false, [], [], []);
 };
 
 $._JsVisitedMap$ = function() {
   return new $._JsVisitedMap(null);
 };
 
-$.Futures_wait = function(futures) {
-  var t1, completer, result, values, i, future;
-  t1 = {};
-  if (typeof futures !== 'string' && (typeof futures !== 'object' || futures === null || futures.constructor !== Array && !futures.is$JavaScriptIndexingBehavior()))
-    return $.Futures_wait$bailout(1, futures, t1);
-  if ($.getInterceptor$JSStringJSArray(futures).get$isEmpty(futures) === true)
-    return $.Future_Future$immediate($.CONSTANT8);
-  completer = $.Completer_Completer();
-  result = completer.get$future();
-  t1.remaining_0 = futures.length;
-  values = $.List_List(futures.length);
-  for (i = 0; i < futures.length; ++i) {
-    future = futures[i];
-    future.then$1(new $.Futures_wait_anon(t1, values, completer, result, i));
-    future.handleException$1(new $.Futures_wait_anon0(future, completer, result));
-  }
-  return result;
-};
-
 $.HttpRequest_HttpRequest = function() {
   return new XMLHttpRequest();
-};
-
-$._MessageTraverserVisitedMap$0 = function() {
-  return new $._MessageTraverserVisitedMap0();
 };
 
 $._serializeMessage = function(message) {
@@ -11727,10 +11727,6 @@ $._ExceptionImplementation$ = function(message) {
   return new $._ExceptionImplementation(message);
 };
 
-$._EventLoop$ = function() {
-  return new $._EventLoop($.Queue_Queue());
-};
-
 $._PendingSendPortFinder$ = function() {
   var t1 = $._MessageTraverserVisitedMap$0();
   t1 = new $._PendingSendPortFinder([], t1);
@@ -11742,15 +11738,6 @@ $._waitForPendingPorts = function(message, callback) {
   var finder = $._PendingSendPortFinder$();
   finder.traverse$1(message);
   $.Futures_wait(finder.ports).then$1(new $._waitForPendingPorts_anon(callback));
-};
-
-$._inject = function(code) {
-  var script, t1;
-  script = $.ScriptElement_ScriptElement();
-  script.set$type("text/javascript");
-  script.set$innerHTML(code);
-  t1 = $.document().get$body().get$nodes();
-  $.getInterceptor$JSArray(t1).add$1(t1, script);
 };
 
 $._initialize = function(exception) {
@@ -11821,15 +11808,24 @@ $._exitScope = function(depth) {
   $.get$_proxiedObjectTable().exitScope$0();
 };
 
+$.vec3$copy = function(other) {
+  var t1 = new $.vec3(null, null, null);
+  t1.vec3$copy$1(other);
+  return t1;
+};
+
 $.retain = function(proxy) {
   $._jsGlobalize.callSync$1($._serialize(proxy));
   return proxy;
 };
 
-$.vec3$raw = function(x_, y_, z_) {
-  var t1 = new $.vec3(null, null, null);
-  t1.vec3$raw$3(x_, y_, z_);
-  return t1;
+$._inject = function(code) {
+  var script, t1;
+  script = $.ScriptElement_ScriptElement();
+  script.set$type("text/javascript");
+  script.set$innerHTML(code);
+  t1 = $.document().get$body().get$nodes();
+  $.getInterceptor$JSArray(t1).add$1(t1, script);
 };
 
 $.map = function(data) {
@@ -11838,12 +11834,6 @@ $.map = function(data) {
 
 $.array = function(list) {
   return $.Proxy_Proxy$_json(list);
-};
-
-$.vec3$zero = function() {
-  var t1 = new $.vec3(null, null, null);
-  t1.vec3$zero$0();
-  return t1;
 };
 
 $._serialize = function(message) {
@@ -11898,6 +11888,18 @@ $._deserialize = function(message) {
       return $._deserializeElement($.index(message, 1));
   }
   throw $.$$throw("Unsupported serialized data: " + $.S(message));
+};
+
+$.vec3$raw = function(x_, y_, z_) {
+  var t1 = new $.vec3(null, null, null);
+  t1.vec3$raw$3(x_, y_, z_);
+  return t1;
+};
+
+$.vec3$zero = function() {
+  var t1 = new $.vec3(null, null, null);
+  t1.vec3$zero$0();
+  return t1;
 };
 
 $._serializeElement = function(e) {
@@ -11966,10 +11968,38 @@ $._deserializeElement = function(id) {
   return e;
 };
 
-$.vec3$copy = function(other) {
-  var t1 = new $.vec3(null, null, null);
-  t1.vec3$copy$1(other);
-  return t1;
+$.normalize = function(x, out) {
+  var t1;
+  if (typeof x === 'number') {
+    t1 = $.sign(x, null);
+    if (typeof t1 !== 'number')
+      throw $.iae(t1);
+    return 1 * t1;
+  }
+  if (typeof x === 'object' && x !== null && !!x.is$vec2) {
+    if (out == null)
+      out = $.vec2$copy(x);
+    x.normalize$0();
+    return out;
+  }
+  if (typeof x === 'object' && x !== null && !!x.is$vec3) {
+    if (out == null)
+      out = $.vec3$copy(x);
+    x.normalize$0();
+    return out;
+  }
+  if (typeof x === 'object' && x !== null && !!x.is$vec4) {
+    if (out == null)
+      out = $.vec4$copy(x);
+    x.normalize$0();
+    return out;
+  }
+  return;
+};
+
+$.distance = function(x, y) {
+  var t1 = $.sub(x, y);
+  return $.getInterceptor$JSStringJSArray(t1).get$length(t1);
 };
 
 $.DoubleLinkedQueue$ = function() {
@@ -11980,6 +12010,10 @@ $.DoubleLinkedQueue$ = function() {
 
 $.FrameSetElementEvents$ = function(_ptr) {
   return new $.FrameSetElementEvents(_ptr);
+};
+
+$._MessageTraverserVisitedMap$0 = function() {
+  return new $._MessageTraverserVisitedMap0();
 };
 
 $.sign = function(arg, out) {
@@ -12019,48 +12053,6 @@ $.sign = function(arg, out) {
   throw $.$$throw($.ArgumentError$(arg));
 };
 
-$._JsDeserializer$0 = function() {
-  return new $._JsDeserializer0(null);
-};
-
-$.distance = function(x, y) {
-  var t1 = $.sub(x, y);
-  return $.getInterceptor$JSStringJSArray(t1).get$length(t1);
-};
-
-$.normalize = function(x, out) {
-  var t1;
-  if (typeof x === 'number') {
-    t1 = $.sign(x, null);
-    if (typeof t1 !== 'number')
-      throw $.iae(t1);
-    return 1 * t1;
-  }
-  if (typeof x === 'object' && x !== null && !!x.is$vec2) {
-    if (out == null)
-      out = $.vec2$copy(x);
-    x.normalize$0();
-    return out;
-  }
-  if (typeof x === 'object' && x !== null && !!x.is$vec3) {
-    if (out == null)
-      out = $.vec3$copy(x);
-    x.normalize$0();
-    return out;
-  }
-  if (typeof x === 'object' && x !== null && !!x.is$vec4) {
-    if (out == null)
-      out = $.vec4$copy(x);
-    x.normalize$0();
-    return out;
-  }
-  return;
-};
-
-$.Future_Future$immediate = function(value) {
-  return $._FutureImpl__FutureImpl$immediate(value);
-};
-
 $._DoubleLinkedQueueIterator$ = function(_sentinel) {
   var t1 = new $._DoubleLinkedQueueIterator(_sentinel, null);
   t1._DoubleLinkedQueueIterator$1(_sentinel);
@@ -12074,12 +12066,12 @@ $._DoubleLinkedQueueEntrySentinel$ = function() {
   return t1;
 };
 
-$._NativeJsSendPort$ = function(_receivePort, isolateId) {
-  return new $._NativeJsSendPort(_receivePort, isolateId);
+$.Future_Future$immediate = function(value) {
+  return $._FutureImpl__FutureImpl$immediate(value);
 };
 
-$._IsolateEvent$ = function(isolate, fn, message) {
-  return new $._IsolateEvent(isolate, fn, message);
+$._JsDeserializer$0 = function() {
+  return new $._JsDeserializer0(null);
 };
 
 $._JsCopier$ = function() {
@@ -12152,38 +12144,46 @@ $.Map_Map = function() {
   return $._HashMapImpl$();
 };
 
-$.Date_Date$fromMillisecondsSinceEpoch = function(millisecondsSinceEpoch, isUtc) {
-  return $._DateImpl$fromMillisecondsSinceEpoch(millisecondsSinceEpoch, isUtc);
-};
-
-$.MediaStreamTrackEvents$ = function(_ptr) {
-  return new $.MediaStreamTrackEvents(_ptr);
-};
-
 $._HashSetIterator$ = function(set_) {
   var t1 = new $._HashSetIterator(set_._backingMap._keys, -1);
   t1._HashSetIterator$1(set_);
   return t1;
 };
 
+$.MediaStreamTrackEvents$ = function(_ptr) {
+  return new $.MediaStreamTrackEvents(_ptr);
+};
+
+$.Date_Date$fromMillisecondsSinceEpoch = function(millisecondsSinceEpoch, isUtc) {
+  return $._DateImpl$fromMillisecondsSinceEpoch(millisecondsSinceEpoch, isUtc);
+};
+
 $.Date_Date$now = function() {
   return $._DateImpl$now();
+};
+
+$._EventLoop$ = function() {
+  return new $._EventLoop($.Queue_Queue());
 };
 
 $.int_parse = function(source) {
   return $.Primitives_parseInt(source);
 };
 
+$.Comparable_compare = function(a, b) {
+  return $.getInterceptor$JSStringJSNumber(a).compareTo$1(a, b);
+};
+
 $.MediaStreamTrackListEvents$ = function(_ptr) {
   return new $.MediaStreamTrackListEvents(_ptr);
 };
 
-$.MessagePortEvents$ = function(_ptr) {
-  return new $.MessagePortEvents(_ptr);
+$._IsolateEvent$ = function(isolate, fn, message) {
+  return new $._IsolateEvent(isolate, fn, message);
 };
 
-$.Comparable_compare = function(a, b) {
-  return $.getInterceptor$JSStringJSNumber(a).compareTo$1(a, b);
+$.MessagePortEvents$ = function(_ptr) {
+  return new $.MessagePortEvents(_ptr);
 };
 
 $.MediaElementEvents$ = function(_ptr) {
@@ -12194,28 +12194,41 @@ $.AudioContextEvents$ = function(_ptr) {
   return new $.AudioContextEvents(_ptr);
 };
 
+$.AudioManager_setup = function(exception) {
+  try {
+    $.AudioManager_audioContext = $.AudioContext_AudioContext();
+    $.AudioManager_gainNode = $.AudioManager_audioContext.createGain$0();
+  } catch (exception) {
+    $.unwrapException(exception);
+    $.AudioManager_enabled = false;
+    $.print("Web Audio is not enabled for this browser");
+  }
+
+  if ($.AudioManager_audioContext == null) {
+    $.AudioManager_enabled = false;
+    $.print("Web Audio is not enabled for this browser");
+  }
+};
+
 $.AudioManager_load = function(audioName, callback) {
-  var xhr, audio, t1;
-  xhr = $.HttpRequest_HttpRequest();
+  var audio, xhr, t1;
   audio = $.Audio$(audioName, $.AudioManager_audioContext);
-  xhr.open$3("GET", "audio\\" + $.S(audioName), true);
-  xhr.set$responseType("arraybuffer");
-  $.indexSet($.get$AudioManager__audios(), audioName, audio);
-  t1 = $.get$AudioManager__audiosLoading();
-  $.getInterceptor$JSArray(t1).add$1(t1, audio);
-  t1 = xhr.get$on().get$load();
-  $.getInterceptor$JSArray(t1).add$1(t1, new $.AudioManager_load_anon(xhr, audioName, audio, callback));
-  xhr.send$0();
-  $.print("Started fetching audio file " + $.S(audioName));
-};
-
-$.AudioManager_get = function(audioName) {
-  return $.index($.get$AudioManager__audios(), audioName);
-};
-
-$.AudioManager_setup = function() {
-  $.AudioManager_audioContext = $.AudioContext_AudioContext();
-  $.AudioManager_gainNode = $.AudioManager_audioContext.createGain$0();
+  if ($.AudioManager_enabled === true) {
+    xhr = $.HttpRequest_HttpRequest();
+    xhr.open$3("GET", "audio\\" + $.S(audioName), true);
+    xhr.set$responseType("arraybuffer");
+    $.indexSet($.get$AudioManager__audios(), audioName, audio);
+    t1 = $.get$AudioManager__audiosLoading();
+    $.getInterceptor$JSArray(t1).add$1(t1, audio);
+    t1 = xhr.get$on().get$load();
+    $.getInterceptor$JSArray(t1).add$1(t1, new $.AudioManager_load_anon(callback, audio, audioName, xhr));
+    xhr.send$0();
+    $.print("Started fetching audio file " + $.S(audioName));
+  } else {
+    audio.onLoadFailure$0();
+    if (!(callback == null))
+      callback.call$1(audio);
+  }
 };
 
 $.DatabaseEvents$ = function(_ptr) {
@@ -12226,15 +12239,15 @@ $.Audio$ = function(name$, _audioContext) {
   return new $.Audio(name$, $.List_List(null), false, false, null, _audioContext);
 };
 
-$.BodyElementEvents$ = function(_ptr) {
-  return new $.BodyElementEvents(_ptr);
-};
-
 $.GameplayScreen$ = function(screenManager) {
   var t1 = new $.GameplayScreen($.List_List(null), true, null, null, true, $.List_List(null));
   t1.GameScreen$1(screenManager);
   t1.GameplayScreen$1(screenManager);
   return t1;
+};
+
+$.BodyElementEvents$ = function(_ptr) {
+  return new $.BodyElementEvents(_ptr);
 };
 
 $.FortNode$ = function(gameScreen) {
@@ -12248,6 +12261,10 @@ $.FortNode$ = function(gameScreen) {
   t2.Button$4(t3, "node_neutral.png", null, gameScreen);
   t2.FortNode$1(gameScreen);
   return t2;
+};
+
+$.AudioManager_get = function(audioName) {
+  return $.index($.get$AudioManager__audios(), audioName);
 };
 
 $.NotificationEvents$ = function(_ptr) {
@@ -13426,6 +13443,7 @@ $._HashMapImpl__INITIAL_CAPACITY = 8;
 $.AudioManager_audioContext = null;
 $.AudioManager_onLoadComplete = null;
 $.AudioManager_gainNode = null;
+$.AudioManager_enabled = true;
 $.Primitives_hashCodeSeed = 0;
 $.Primitives_mirrorsEnabled = false;
 $.Primitives_DOLLAR_CHAR_VALUE = 36;
@@ -13436,10 +13454,10 @@ $.KeyCode_ALT = 18;
 $.KeyCode_SPACE = 32;
 $.KeyCode_LEFT = 37;
 $.KeyCode_UP = 38;
-$.FortNode_MAX_UNITS = 5;
 $.KeyCode_RIGHT = 39;
 $.KeyCode_DOWN = 40;
 $.FortNode_ATTACK_WAIT = 2;
+$.FortNode_MAX_UNITS = 5;
 $.FortNode_UNIT_WAIT = 3;
 $._getTypeNameOf = null;
 $.KeyCode_ZERO = 48;
@@ -13458,8 +13476,8 @@ $.KeyCode_A = 65;
 $.KeyCode_B = 66;
 $.Player_CurrentPlayer = null;
 $.KeyCode_C = 67;
-$.Player_NeutralPlayer = null;
 $.KeyCode_D = 68;
+$.Player_EnemyPlayer = null;
 $.KeyCode_E = 69;
 $.Player_NEUTRAL = 0;
 $.KeyCode_F = 70;
@@ -13467,12 +13485,12 @@ $.Player_PLAYER = 1;
 $.KeyCode_G = 71;
 $.Player_ENEMY = 2;
 $.KeyCode_H = 72;
+$.Player_NeutralPlayer = null;
 $.KeyCode_I = 73;
-$.Player_EnemyPlayer = null;
 $.KeyCode_J = 74;
 $.KeyCode_K = 75;
-$.KeyCode_L = 76;
 $._ReceivePortImpl__nextFreeId = 1;
+$.KeyCode_L = 76;
 $.KeyCode_M = 77;
 $.KeyCode_N = 78;
 $.KeyCode_O = 79;
@@ -13593,12 +13611,12 @@ $.GameLoopKeyboard_TWO = 50;
 $.GameLoopKeyboard_THREE = 51;
 $.GameLoopKeyboard_FOUR = 52;
 $.GameLoopKeyboard_FIVE = 53;
-$.GameLoopKeyboard_SIX = 54;
 $.ReceivePortSync__portMap = null;
-$.GameLoopKeyboard_SEVEN = 55;
+$.GameLoopKeyboard_SIX = 54;
 $.ReceivePortSync__portIdCount = null;
-$.GameLoopKeyboard_EIGHT = 56;
+$.GameLoopKeyboard_SEVEN = 55;
 $.ReceivePortSync__cachedIsolateId = null;
+$.GameLoopKeyboard_EIGHT = 56;
 $.GameLoopKeyboard_NINE = 57;
 $.GameLoopKeyboard_TILDE = 192;
 $.GameLoopKeyboard_ENTER = 13;
@@ -13645,11 +13663,11 @@ $.getInterceptor$JSArray = function(receiver) {
 Isolate.$lazy($, '_audios', 'AudioManager__audios', 'get$AudioManager__audios', function() {
   return $.Map_Map();
 });
-Isolate.$lazy($, '_buttonIds', 'GameLoopMouse__buttonIds', 'get$GameLoopMouse__buttonIds', function() {
-  return [0, 1, 2];
-});
 Isolate.$lazy($, '_audiosLoading', 'AudioManager__audiosLoading', 'get$AudioManager__audiosLoading', function() {
   return $.List_List(null);
+});
+Isolate.$lazy($, '_buttonIds', 'GameLoopMouse__buttonIds', 'get$GameLoopMouse__buttonIds', function() {
+  return [0, 1, 2];
 });
 Isolate.$lazy($, '_map', '_FunctionProxy__map', 'get$_FunctionProxy__map', function() {
   return $.Map_Map();

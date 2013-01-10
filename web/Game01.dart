@@ -2,7 +2,6 @@ import 'dart:html';
 import 'package:game_loop/game_loop.dart';
 import 'package:js/js.dart' as js;
 
-import '../lib/texture_manager.dart';
 import '../lib/game.dart';
 import '../lib/home_screen.dart';
 

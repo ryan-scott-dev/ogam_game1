@@ -13,11 +13,26 @@ class AudioManager {
   
   static AudioContext audioContext;
   static GainNode gainNode;
+  static bool enabled = true;
   
   static void setup()
   {
-    audioContext = new AudioContext();
-    gainNode = audioContext.createGain();
+    try
+    {
+      audioContext = new AudioContext();
+      gainNode = audioContext.createGain();
+    }
+    catch (e)
+    {
+      enabled = false;
+      print("Web Audio is not enabled for this browser");
+    }
+    
+    if(audioContext == null)
+    {
+      enabled = false;
+      print("Web Audio is not enabled for this browser");
+    }
   }
   
   static Audio get(String audioName)
@@ -27,49 +42,59 @@ class AudioManager {
   
   static void load(String audioName, {AudioLoadDelegate callback: null})
   {
-    HttpRequest xhr = new HttpRequest();
-    
     Audio audio = new Audio(audioName, audioContext);
-    xhr.open("GET", "audio\\$audioName", true);
-    xhr.responseType = "arraybuffer";
     
-    _audios[audioName] = audio;
-    _audiosLoading.add(audio);
-    
-    xhr.on.load.add((event) {
-      try
-      {
-        print('Loaded audio file $audioName');
+    if(enabled)
+    {
+      HttpRequest xhr = new HttpRequest();
       
-        audioContext.decodeAudioData(xhr.response, (buffer) {
-          audio.load(buffer);
-          
-          if(callback != null)
-            callback(audio);
+      xhr.open("GET", "audio\\$audioName", true);
+      xhr.responseType = "arraybuffer";
+      
+      _audios[audioName] = audio;
+      _audiosLoading.add(audio);
+      
+      xhr.on.load.add((event) {
+        try
+        {
+          print('Loaded audio file $audioName');
         
-          _audiosLoading.removeAt(_audiosLoading.indexOf(audio));
-          if(_audiosLoading.length == 0 && onLoadComplete != null)
-          {    
-            onLoadComplete();
-          }
-        },
-        (buffer) {
+          audioContext.decodeAudioData(xhr.response, (buffer) {
+            audio.load(buffer);
+            
+            if(callback != null)
+              callback(audio);
+          
+            _audiosLoading.removeAt(_audiosLoading.indexOf(audio));
+            if(_audiosLoading.length == 0 && onLoadComplete != null)
+            {    
+              onLoadComplete();
+            }
+          },
+          (buffer) {
+            audio.onLoadFailure();
+            
+            if(callback != null)
+              callback(audio);
+          });
+        }
+        catch (e) {
           audio.onLoadFailure();
           
           if(callback != null)
             callback(audio);
-        });
-      }
-      catch (e) {
-        audio.onLoadFailure();
-        
-        if(callback != null)
-          callback(audio);
-      }
-    });
-    
-    xhr.send();
-    print('Started fetching audio file $audioName');
-    
+        }
+      });
+      
+      xhr.send();
+      print('Started fetching audio file $audioName');
+    }
+    else
+    {
+      audio.onLoadFailure();
+      
+      if(callback != null)
+        callback(audio);
+    }
   }
 }
